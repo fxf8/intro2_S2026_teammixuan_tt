@@ -1,3 +1,6 @@
+// Note: The purpose of this module is to convert the edge-sensitive 4 phase
+// handshake to a single cycle pulse
+
 module src1 #(
     //parameters here
 ) (

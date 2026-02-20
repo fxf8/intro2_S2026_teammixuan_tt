@@ -1,8 +1,9 @@
-module src1 #(
-    //parameters here
+module handshake_fsm #(
+    // parameters here
 ) (
-    input  logic clk,
+    input logic clk,
     nrst,  //clock and negative-edge reset
+
     //other signals here
     output logic a
 );

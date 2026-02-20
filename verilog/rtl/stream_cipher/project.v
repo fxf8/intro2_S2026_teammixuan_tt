@@ -2,8 +2,8 @@
 
 module stream_cipher (
 `ifdef USE_POWER_PINS
-    inout VPWR,
-    inout VGND,
+    inout             VPWR,
+    inout             VGND,
 `endif
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
@@ -18,11 +18,16 @@ module stream_cipher (
   // All output pins must be assigned. If not used, assign to 0.
   assign uo_out[7:1] = '0;
   assign uio_out = '0;
-  assign uio_oe  = '0;
+  assign uio_oe = '0;
 
-  top #() top_inst(.clk(clk), .nrst(rst_n), .out(uo_out[0]));
+  top #() top_inst (
+      .clk (clk),
+      .nrst(rst_n),
+      .out (uo_out[0])
+  );
 
   // List all unused inputs to prevent warnings
   wire _unused = &{ena, clk, rst_n, 1'b0};
 
 endmodule
+
