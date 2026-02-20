@@ -17,7 +17,7 @@ module reader #(
     input logic output_acknowledge,
 
     // FSM State (received from fsm state block)
-    input logic [1:0] fsm_state,
+    input interface_state_t fsm_state,
 
     // Signals sent to the data router
     output logic [7:0] input_byte_pulsed,  // This is the input byte that *gets pulsed*

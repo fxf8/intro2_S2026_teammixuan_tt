@@ -1,13 +1,26 @@
-module handshake_fsm #(
+typedef enum {
+  IDLE,
+  PROCESSING,
+  DONE
+} interface_state_t;
+
+module interface_fsm #(
     // parameters here
 ) (
+    // Note: This module will likely be edge-sensitive
+    /*
     input logic clk,
     nrst,  //clock and negative-edge reset
+    */
 
-    //other signals here
-    output logic a
+    // Handshake signals
+    input logic input_request,
+    input logic output_acknowledge,
+    input logic output_is_ready, // This is received by the output holder block
+
+    output interface_state_t interface_state
 );
   //module code here
-  assign a = clk && nrst;
+  // assign a = clk && nrst;
 
 endmodule
