@@ -14,10 +14,12 @@ module output_mux #(
 
     // Outputs sent to the output of the chip
     output logic [7:0] data_out,
-    output logic output_byte_is_ready
+    output logic output_byte_is_ready,
     // Note: `output_bte_is_rady` stays high until the chip user specifies the output has been read (using the output_acknowledge pin)
+
+    output logic input_acknowledged
 );
   //module code here
-  assign a = clk && nrst;
+  // assign a = clk && nrst;
 
 endmodule
