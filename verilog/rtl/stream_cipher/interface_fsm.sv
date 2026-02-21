@@ -7,11 +7,8 @@ typedef enum {
 module interface_fsm #(
     // parameters here
 ) (
-    // Note: This module will likely be edge-sensitive
-    /*
     input logic clk,
     nrst,  //clock and negative-edge reset
-    */
 
     // Handshake signals
     input logic input_request,
