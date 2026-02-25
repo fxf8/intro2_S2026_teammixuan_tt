@@ -11,13 +11,46 @@ module interface_fsm #(
     nrst,  //clock and negative-edge reset
 
     // Handshake signals
-    input logic input_request,
-    input logic output_acknowledge,
-    input logic output_is_ready, // This is received by the output holder block
+    input logic input_request,  // Received by the chip input pins
+    input logic output_acknowledge,  // Received by the chip input pins
+    input logic output_is_ready,  // This is received by the output holder block
 
     output interface_state_t interface_state
 );
   //module code here
   // assign a = clk && nrst;
 
+  interface_state_t next_interface_state;
+
+  always_ff @(posedge clk or negedge nrst) begin
+    if (!nrst) begin
+      interface_state <= IDLE;
+    end else begin
+      interface_state <= next_interface_state;
+    end
+  end
+
+  always_comb begin
+    next_state = interface_state;
+
+    unique case (interface_state)
+      IDLE: begin
+        if (input_request) begin
+          next_state = PROCESSING;
+        end
+      end
+
+      PROCESSING: begin
+        if (output_is_ready) begin
+          next_state = DONE;
+        end
+      end
+
+      DONE: begin
+        if (output_acknowledge) begin
+          next_state = IDLE;
+        end
+      end
+    endcase
+  end
 endmodule
