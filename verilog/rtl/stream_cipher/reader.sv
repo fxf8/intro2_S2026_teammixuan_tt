@@ -14,7 +14,6 @@ module reader #(
 
     // Handshake Management Inputs (received from chip pins)
     input logic input_request,
-    input logic output_acknowledge,
 
     // FSM State (received from fsm state block)
     input interface_state_t fsm_state,
@@ -27,7 +26,35 @@ module reader #(
     // Signal sent to the hash generator
     output logic reset_hash_pulse
 );
-  //module code here
-  // assign a = clk && nrst; (example)
+  always_ff @(posedge clk or negedge nrst) begin
+    if (!nrst) begin
+      input_byte_pulsed <= 1'b0;
+      is_key_pulsed <= 1'b0;
+      input_byte_pulse <= 1'b0;
+      reset_hash_pulse <= 1'b0;
+    end else begin
+      // First, ensure that pulses are reset to low
+      input_byte_pulsed <= 1'b0;
+      is_key_pulsed <= 1'b0;
 
+      if (fsm_state == IDLE && input_request) begin
+        // Only perform one action at a time (avoid overlapping actions).
+        // Different actions will have different precedences.
+        // The precedence of each actions the user can perform is as follows:
+        // 1. Reset Hash
+        // 2. Input Byte
+
+        // Reset Hash Case
+        if (reset_hash) begin
+          reset_hash_pulse <= 1'b1;
+        end  // Input Byte Case
+
+        else begin
+          input_byte_pulsed <= input_byte;
+          is_key_pulsed <= is_key;
+          input_byte_pulse <= 1'b1;
+        end
+      end
+    end
+  end
 endmodule
