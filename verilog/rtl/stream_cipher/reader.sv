@@ -19,13 +19,25 @@ module reader #(
     input interface_state_t fsm_state,
 
     // Signals sent to the data router
-    output logic [7:0] input_byte_pulsed,  // This is the input byte that *gets pulsed*
-    output logic is_key_pulsed,
-    output logic input_byte_pulse,  // This is the pulse used to communicate the 2 outputs above ^^^
+    output logic [7:0] input_byte_pulsed_out,  // This is the input byte that *gets pulsed*
+    output logic is_key_pulsed_out,
+    output logic input_byte_pulse_out,  // This is the pulse used to communicate the 2 outputs above
 
     // Signal sent to the hash generator
-    output logic reset_hash_pulse
+    output logic reset_hash_pulse_out
 );
+  logic [7:0] input_byte_pulsed;  // Flipflop to store the input byte that gets pulsed
+  assign input_byte_pulsed_out = input_byte_pulsed;
+
+  logic is_key_pulsed;
+  assign is_key_pulsed_out = is_key_pulsed;
+
+  logic input_byte_pulse;
+  assign input_byte_pulse_out = input_byte_pulse;
+
+  logic reset_hash_pulse;
+  assign reset_hash_pulse_out = reset_hash_pulse;
+
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
       input_byte_pulsed <= 1'b0;
