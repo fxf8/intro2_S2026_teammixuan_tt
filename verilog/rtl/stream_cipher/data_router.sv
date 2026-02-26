@@ -19,7 +19,24 @@ module data_router #(
     output logic byte_pulse
 
 );
-  //module code here
-  // assign a = clk && nrst;
+  always_comb begin
+    // First, ensure that pulses are default to low
+    key_byte_pulse = 1'b0;
+    byte_pulse = 1'b0;
 
+    // Ensure that the outputs are default to low
+    key_byte = 8'b0;
+    byte_pulsed = 8'b0;
+
+    // Direct the data to the correct module when data is received
+    if (input_pulse) begin
+      if (is_key_pulsed) begin
+        key_byte = input_byte_pulsed;
+        key_byte_pulse = 1'b1;
+      end else begin
+        byte_pulsed = input_byte_pulsed;
+        byte_pulse  = 1'b1;
+      end
+    end
+  end
 endmodule
