@@ -71,10 +71,11 @@ module hash_generator #(
   next_hash_state_t next_hash_current_state;
   next_hash_state_t next_hash_next_state;
 
-  logic [63:0] next_hash;
+  logic [31:0] v0_next;
+  logic [31:0] v1_next;
 
-  wire v0_next = next_hash[63:32];
-  wire v1_next = next_hash[31:0];
+  logic [63:0] next_hash;
+  assign next_hash = {v0_next, v1_next};
 
   logic [31:0] sum;
 
@@ -231,8 +232,44 @@ module hash_generator #(
     endcase
   end
 
+  logic [31:0] v0_round_temp;
+  logic [31:0] v1_round_temp;
+  logic [31:0] sum_round_temp;
+
+  // This block is the combinational circuit to compute a round of the XTEA
+  // hash
+  always_comb begin
+    v0_round_temp  = v0_next;
+    v1_round_temp  = v1_next;
+    sum_round_temp = sum;
+
+    if (next_hash_current_state == CALCULATING) begin
+      v0_round_temp = v0_next + (
+          (((v1_next << 4) ^ (v1_next >> 5)) + v1_next) ^
+          (sum + key_memory[(sum & 2'b11) * 32+:32])
+        );
+
+      // Step 2: Update sum (XTEA updates sum between v0 and v1)
+      sum_round_temp = sum + XTEADelta;
+
+      // Step 3: Update v1 using the NEW v0 and NEW sum
+      v1_round_temp = v1_next + (
+          (((v0_round_temp << 4) ^ (v0_round_temp >> 5)) + v0_round_temp) ^
+          (sum_round_temp + key_memory[((sum_round_temp >> 11) & 2'b11) * 32+:32])
+        );
+    end
+  end
+
   // Action block for the next hash
   always_ff @(posedge clk or negedge nrst) begin
+    if (!nrst) begin
+      v0_next <= '0;
+      v1_next <= '0;
+      sum <= '0;
+      iteration_count <= '0;
+      hash_computations_count <= '0;
+    end
+
     unique case (next_hash_current_state)
       IDLE: begin
         if (generator_current_state == FIRST_QUERRY) begin
@@ -242,31 +279,42 @@ module hash_generator #(
 
           v0_next <= XTEADelta;
           v1_next <= '0;
+          sum <= '0;
         end
       end
 
       CALCULATING: begin
         // Apply one round of the XTEA algorithm here
 
-        iteration_count <= iteration_count + 1;
+        // Note: this is the complement of the condition to transition from
+        // CALCULATING to READY
+        if (iteration_count < HASH_ITERATIONS) begin
 
-        if (iteration_count >= HASH_ITERATIONS) begin
+          v0_next <= v0_round_temp;
+          v1_next <= v1_round_temp;
+          sum <= sum_round_temp;
+
+          iteration_count <= iteration_count + 1;
+
+        end else begin
           iteration_count <= '0;
           hash_computations_count <= hash_computations_count + 1;
         end
       end
 
       READY: begin
-        if (iteration_count >= HASH_ITERATIONS) begin
-          // This is also the condition to transition to the computing state.
-          // These are actions to perform to "initialize" the start of the
-          // computation
+        if (hash_number >= hash_computations_count) begin
+          // This is also the condition to transition to the CALCULATING state
+          // from the READY state. These are actions to perform to "initialize"
+          // the start of the computation
 
           v0_next <= hash[31:0] ^ hash[63:32];
           v1_next <= hash_computations_count;
+          sum <= '0;
         end
       end
     endcase
   end
 
 endmodule
+
