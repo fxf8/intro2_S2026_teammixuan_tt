@@ -5,17 +5,22 @@
 // v[1] = 32 bit counted value
 
 typedef enum {
-  EMPTY,  // The initial ground state when no hash is computed
+  GROUND,  // The initial ground state when no hash is computed
+
+  // This is used for the first time when a hashed byte is requested
+  FIRST_QUERRY,
+
   READY,  // When the hash is computed and the marker is not at the end of the buffer
   QUERRIED,  // When a hashed byte has been requested
   EXHAUSTED,  // When the marker has reached the end of the buffer
 
   // When the marker has reached the end of the buffer *AND* a hashed byte has been requested
   QUERRIED_EXHAUSTED
+
 } hash_generator_state_t;
 
 typedef enum {
-  EMPTY,  // The starting initial state when no hash is computed
+  IDLE,  // The starting initial state when no hash is computed
   READY,  // When the hash is computed and the marker is within the hashed bounds
   CALCULATING  // When the hash is being computed
 } next_hash_state_t;
@@ -57,6 +62,9 @@ module hash_generator #(
 
   logic [63:0] hash;
 
+  // This is the number hash that is currently being served
+  logic [31:0] hash_number;
+
   assign hash_byte_out = hash[hash_byte_out_index*8+:8];
 
   // Values used to compute the next hash ----
@@ -69,16 +77,21 @@ module hash_generator #(
   wire v1_next = next_hash[31:0];
 
   logic [31:0] sum;
+
+  localparam int IterationCountWidth = $clog2(HASH_ITERATIONS);
+
+  logic [IterationCountWidth-1:0] iteration_count;
+
   // Total amount of hashes computed. This is assigned to the initial v0 when
   // computing next_hash
-  logic [31:0] hashed_count;
+  logic [31:0] hash_computations_count;
 
   // Start of 3-Block FSM for the hash generator
 
   // State transition setter for the hash generator
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      generator_current_state <= EMPTY;
+      generator_current_state <= GROUND;
 
     end else begin
       generator_current_state <= generator_next_state;
@@ -91,11 +104,15 @@ module hash_generator #(
     generator_next_state = generator_current_state;
 
     unique case (generator_current_state)
-      EMPTY: begin
+      GROUND: begin
+        if (request_hash_byte_pulse) begin
+          generator_next_state = FIRST_QUERRY;
+        end
+      end
+
+      FIRST_QUERRY: begin
         if (next_hash_current_state == READY) begin
-          // In this scenario, the next hash is ready and will be assigned
-          // to the current hash
-          generator_next_state = READY;
+          generator_next_state = QUERRIED;
         end
       end
 
@@ -118,9 +135,7 @@ module hash_generator #(
       // last byte will be pulsed and the state will be transitioned to
       // EXHAUSTED wherein the next hash will be computed
       QUERRIED_EXHAUSTED: begin
-        if (next_hash_current_state == READY) begin
-          generator_next_state = EXHAUSTED;
-        end
+        generator_next_state = EXHAUSTED;
       end
 
       EXHAUSTED: begin
@@ -137,20 +152,39 @@ module hash_generator #(
       hash_byte_pulse <= 0;
       hash_byte_out_index <= '0;
       hash <= '0;
-      hashed_count <= 0;
+      hash_number <= '0;
     end
 
     hash_byte_pulse <= 0;
 
     unique case (generator_current_state)
-      EMPTY, EXHAUSTED: begin
+      GROUND: begin
+        hash_number <= '0;
+      end
+
+      FIRST_QUERRY: begin
         if (next_hash_current_state == READY) begin
           hash <= next_hash;
           hash_byte_out_index <= 0;
+          hash_number <= 1;
         end
       end
 
-      QUERRIED, QUERRIED_EXHAUSTED: begin
+      QUERRIED_EXHAUSTED: begin
+        hash_byte_pulse <= 1;  // Pulse the last byte
+      end
+
+      QUERRIED: begin
+        hash_byte_pulse <= 1;
+        hash_byte_out_index <= hash_byte_out_index + 1;
+      end
+
+      EXHAUSTED: begin
+        if (next_hash_current_state == READY) begin
+          hash <= next_hash;
+          hash_byte_out_index <= 0;
+          hash_number <= hash_number + 1;
+        end
       end
     endcase
   end
@@ -160,7 +194,8 @@ module hash_generator #(
   // State transition setter for the next hash
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      next_hash_current_state <= EMPTY;
+      next_hash_current_state <= IDLE;
+
     end else begin
       next_hash_current_state <= next_hash_next_state;
     end
@@ -172,13 +207,26 @@ module hash_generator #(
     next_hash_next_state = next_hash_current_state;
 
     unique case (next_hash_current_state)
-      EMPTY: begin
-      end
-
-      READY: begin
+      IDLE: begin
+        if (generator_current_state == FIRST_QUERRY) begin
+          next_hash_next_state = CALCULATING;
+        end
       end
 
       CALCULATING: begin
+        if (iteration_count >= HASH_ITERATIONS) begin
+          next_hash_next_state = READY;
+        end
+      end
+
+      READY: begin
+        if (hash_number >= hash_computations_count) begin
+          // If the hash_number is equal to the amount of hashes computed,
+          // that means we can start computing the next hash. Similarily, if the
+          // hash_computations_count is more than hash_number, we cannot
+          // compute the next hash since some some hashes would be skipped
+          next_hash_next_state = CALCULATING;
+        end
       end
     endcase
   end
@@ -186,13 +234,37 @@ module hash_generator #(
   // Action block for the next hash
   always_ff @(posedge clk or negedge nrst) begin
     unique case (next_hash_current_state)
-      EMPTY: begin
-      end
+      IDLE: begin
+        if (generator_current_state == FIRST_QUERRY) begin
+          // This is also the condition to transition to the computing state.
+          // These are actions to perform to "initialize" the start of the
+          // computation
 
-      READY: begin
+          v0_next <= XTEADelta;
+          v1_next <= '0;
+        end
       end
 
       CALCULATING: begin
+        // Apply one round of the XTEA algorithm here
+
+        iteration_count <= iteration_count + 1;
+
+        if (iteration_count >= HASH_ITERATIONS) begin
+          iteration_count <= '0;
+          hash_computations_count <= hash_computations_count + 1;
+        end
+      end
+
+      READY: begin
+        if (iteration_count >= HASH_ITERATIONS) begin
+          // This is also the condition to transition to the computing state.
+          // These are actions to perform to "initialize" the start of the
+          // computation
+
+          v0_next <= hash[31:0] ^ hash[63:32];
+          v1_next <= hash_computations_count;
+        end
       end
     endcase
   end
