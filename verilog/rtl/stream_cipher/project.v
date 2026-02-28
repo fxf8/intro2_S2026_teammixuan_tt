@@ -16,18 +16,43 @@ module stream_cipher (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
+
+  /*
   assign uo_out[7:1] = '0;
   assign uio_out = '0;
   assign uio_oe = '0;
+  */
+
+  assign uio_oe[7:0] = 8'b00000110;
+
+  assign uio_out[0]  = 1'b0;
+  assign uio_out[3]  = 1'b0;
+  assign uio_out[4]  = 1'b0;
+  assign uio_out[5]  = 1'b0;
+  assign uio_out[6]  = 1'b0;
+  assign uio_out[7]  = 1'b0;
 
   top #() top_inst (
       .clk (clk),
       .nrst(rst_n),
-      .out (uo_out[0])
+
+      // General Data Pins
+      .input_byte(ui_in),
+      .is_key(uio_in[4]),
+      .reset_hash(uio_in[5]),
+
+      // 4-Phase-Handshake Interfacing pins in order of change
+      .input_request(uio_in[0]),
+      .input_acknowledged(uio_out[1]),
+      .output_byte_is_ready(uio_out[2]),
+      .output_acknowledge(uio_in[3]),
+
+      // Output Byte
+      .output_byte(uo_out)
   );
 
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+  wire _unused = &{ena, uio_in[1], uio_in[2], uio_in[6], uio_in[7], 1'b0};
 
 endmodule
 
