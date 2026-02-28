@@ -15,7 +15,9 @@ typedef enum {
   PULSE_OUT,  // When an output is being pulsed
   EXHAUSTED  // When the marker has reached the end of the buffer
 } hash_generator_state_t;
-
+// Note about `hash_generator_state`:
+// Hashes can only be requested when the hash generator is in either the
+// `GROUND` or `READY` state
 
 module hash_generator #(
     parameter int HASH_ITERATIONS = 8
