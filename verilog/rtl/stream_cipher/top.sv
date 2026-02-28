@@ -1,3 +1,5 @@
+import types_pkg::*;
+
 module top #(
     //parameters here
 ) (

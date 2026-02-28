@@ -1,3 +1,6 @@
+import types_pkg::output_holder_state_t;
+import types_pkg::interface_state_t;
+
 module output_mux (
     // Inputs from output holder
     input logic [7:0] data_in,

@@ -2,10 +2,8 @@
 // for a long duration (until the user of the chip has specified that the
 // output has been read).
 
-typedef enum {
-  EMPTY,
-  READY
-} output_holder_state_t;
+import types_pkg::output_holder_state_t;
+import types_pkg::interface_state_t;
 
 module output_holder (
     input logic clk,

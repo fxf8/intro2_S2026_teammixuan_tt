@@ -1,6 +1,8 @@
 // Note: The purpose of this module is to convert the edge-sensitive 4 phase
 // handshake input to a single-cycle pulse
 
+import types_pkg::interface_state_t;
+
 module reader (
     input logic clk,
     nrst,  //clock and negative-edge reset

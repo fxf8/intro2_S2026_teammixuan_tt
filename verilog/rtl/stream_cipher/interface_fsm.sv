@@ -1,8 +1,4 @@
-typedef enum {
-  IDLE,
-  PROCESSING,
-  DONE
-} interface_state_t;
+import types_pkg::interface_state_t;
 
 module interface_fsm (
     input logic clk,

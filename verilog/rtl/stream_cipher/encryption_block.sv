@@ -1,8 +1,4 @@
-typedef enum {
-  READY,
-  QUERRIED,
-  QUERRIED_AWAITING_HASH
-} encryption_block_state_t;
+import types_pkg::encryption_block_state_t;
 
 module encryption_block (
     input logic clk,
@@ -29,6 +25,7 @@ module encryption_block (
     // General purpose output state
     output encryption_block_state_t encryption_block_state_out
 );
+
   encryption_block_state_t state;
   encryption_block_state_t next_state;
   assign encryption_block_state_out = state;
