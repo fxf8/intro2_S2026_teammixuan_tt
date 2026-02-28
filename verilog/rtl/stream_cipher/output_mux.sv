@@ -1,13 +1,9 @@
 module output_mux #(
     //parameters here
 ) (
-    /*
-    input  logic clk,
-    nrst,  //clock and negative-edge reset
-    */
-
     // Inputs from output holder
     input logic [7:0] data_in,
+    input output_holder_state_t output_holder_state,
 
     // Inputs from interface fsm
     input interface_state_t interface_state,
@@ -19,7 +15,18 @@ module output_mux #(
 
     output logic input_acknowledged
 );
-  //module code here
-  // assign a = clk && nrst;
+  always_comb begin
+    data_out = data_in;
+    input_acknowledged = 1'b0;
+    output_byte_is_ready = 1'b0;
+
+    if (interface_state != interface_state_t::IDLE) begin
+      input_acknowledged = 1'b1;
+    end
+
+    if (output_holder_state == output_holder_state_t::READY) begin
+      output_byte_is_ready = 1'b1;
+    end
+  end
 
 endmodule
