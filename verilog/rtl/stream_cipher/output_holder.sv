@@ -2,6 +2,11 @@
 // for a long duration (until the user of the chip has specified that the
 // output has been read).
 
+typedef enum {
+  EMPTY,
+  READY
+} output_holder_state_t;
+
 module output_holder #(
     //parameters here
 ) (
@@ -16,12 +21,31 @@ module output_holder #(
     input interface_state_t interface_state,
 
     // Output sent to interface fsm
-    output logic output_is_ready,  // Note: This will likely be sent by pulse
+    output output_holder_state_t output_holder_state_out,
 
     // Output sent to output mux
     output logic [7:0] data_out
 );
-  //module code here
-  // assign a = clk && nrst;
+  logic [7:0] data_buffer;
+  assign data_out = data_buffer;
+
+  output_holder_state_t output_holder_state;
+  assign output_holder_state_out = output_holder_state;
+
+  always_ff @(posedge clk or negedge nrst) begin
+    if (!nrst) begin
+      data_buffer <= '0;
+      output_holder_state <= EMPTY;
+
+    end else begin
+      if (data_in_pulse) begin
+        data_buffer <= data_in;
+        output_holder_state <= READY;
+
+      end else if (interface_state == interface_state_t::IDLE) begin
+        output_holder_state <= EMPTY;
+      end
+    end
+  end
 
 endmodule
