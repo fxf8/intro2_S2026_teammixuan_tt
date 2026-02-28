@@ -274,7 +274,7 @@ module hash_generator #(
 
           next_v0 = XTEADelta;
           next_v1 = hash_computations_count;
-          sum = '0;
+          next_sum = '0;
 
         end else begin
           // Initialize values for hash here for the rest of the hash
@@ -282,7 +282,7 @@ module hash_generator #(
 
           next_v0 = v0 ^ v1;
           next_v1 = hash_computations_count;
-          sum = '0;
+          next_sum = '0;
         end
       end
 
@@ -301,6 +301,9 @@ module hash_generator #(
 
   // Logic for iteration_count, next_hash_computations_count
   always_comb begin
+    next_iteration_count = iteration_count;
+    next_hash_computations_count = hash_computations_count;
+
     case (computed_hash_state)
       computed_hash_state::CALCULATING: begin
         // Apply one round of the XTEA algorithm here
