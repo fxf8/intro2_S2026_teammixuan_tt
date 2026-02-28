@@ -244,11 +244,17 @@ sim_%_src:
 	fi
 
 # Run synthesis on Design
+# Hash specialized case for `stream_cipher` where the file `types_pkg.sv` must be read first to interpret global types
 .PHONY: syn_%
 syn_%: check_env
 	@echo -e "Synthesizing design...\n"
 	@mkdir -p $(MAP)
-	$(YOSYS) -d -p "read_verilog -sv -noblackbox $(SRC)/*; synth -top $*; dfflibmap -liberty $(LIBERTY); abc -liberty $(LIBERTY); clean; write_verilog -noattr -noexpr -nohex -nodec -defparam $(MAP)/$*.v" > $*.log
+	@if [ "$*" = "stream_cipher" ]; then \
+		echo -e "Performing Specialized Synthesis for project \`stream_cipher\`\n"; \
+		$(YOSYS) -d -p "read_verilog -sv -noblackbox $(SRC)/types_pkg.sv $(SRC)/*; synth -top $*; dfflibmap -liberty $(LIBERTY); abc -liberty $(LIBERTY); clean; write_verilog -noattr -noexpr -nohex -nodec -defparam $(MAP)/$*.v" > $*.log; \
+	else \
+		$(YOSYS) -d -p "read_verilog -sv -noblackbox $(SRC)/*; synth -top $*; dfflibmap -liberty $(LIBERTY); abc -liberty $(LIBERTY); clean; write_verilog -noattr -noexpr -nohex -nodec -defparam $(MAP)/$*.v" > $*.log; \
+	fi
 	@echo -e "\nSynthesis complete!\n"
 
 
