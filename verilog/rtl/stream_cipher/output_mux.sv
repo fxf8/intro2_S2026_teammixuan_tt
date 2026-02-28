@@ -26,11 +26,11 @@ module output_mux (
     input_acknowledged = 1'b0;
     output_byte_is_ready = 1'b0;
 
-    if (interface_state != interface_state_t::I_IDLE) begin
+    if (interface_state != types_pkg::I_IDLE) begin
       input_acknowledged = 1'b1;
     end
 
-    if (output_holder_state == output_holder_state_t::O_READY) begin
+    if (output_holder_state == types_pkg::O_READY) begin
       output_byte_is_ready = 1'b1;
     end
   end

@@ -125,7 +125,7 @@ module hash_generator #(
       end
 
       types_pkg::H_FIRST_QUERRY: begin
-        if (computed_hash_state == types_pkg::READY) begin
+        if (computed_hash_state == READY) begin
           generator_next_state = types_pkg::H_QUERRIED;
         end
       end

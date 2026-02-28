@@ -39,10 +39,10 @@ module output_holder (
     end else begin
       if (data_in_pulse) begin
         data_buffer <= data_in;
-        output_holder_state <= output_holder_state_t::O_READY;
+        output_holder_state <= types_pkg::O_READY;
 
-      end else if (interface_state == interface_state_t::I_IDLE) begin
-        output_holder_state <= output_holder_state_t::O_EMPTY;
+      end else if (interface_state == types_pkg::I_IDLE) begin
+        output_holder_state <= types_pkg::O_EMPTY;
       end
     end
   end

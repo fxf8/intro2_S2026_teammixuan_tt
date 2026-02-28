@@ -36,19 +36,19 @@ module interface_fsm (
     unique case (current_interface_state)
       types_pkg::I_IDLE: begin
         if (input_request) begin
-          next_interface_state = interface_state_t::I_PROCESSING;
+          next_interface_state = types_pkg::I_PROCESSING;
         end
       end
 
       types_pkg::I_PROCESSING: begin
         if (output_is_ready) begin
-          next_interface_state = interface_state_t::I_DONE;
+          next_interface_state = types_pkg::I_DONE;
         end
       end
 
       types_pkg::I_DONE: begin
         if (output_acknowledge) begin
-          next_interface_state = interface_state_t::I_IDLE;
+          next_interface_state = types_pkg::I_IDLE;
         end
       end
     endcase

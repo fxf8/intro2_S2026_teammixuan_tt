@@ -39,7 +39,7 @@ module reader (
       input_byte_pulsed <= '0;
       is_key_pulsed <= 1'b0;
 
-      if (fsm_state == interface_state_t::I_IDLE && input_request) begin
+      if (fsm_state == types_pkg::I_IDLE && input_request) begin
         // Only perform one action at a time (avoid overlapping actions).
         // Different actions will have different precedences.
         // The precedence of each actions the user can perform is as follows:
