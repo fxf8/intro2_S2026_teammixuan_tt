@@ -96,8 +96,8 @@ module hash_generator #(
 
   // State setter for the hash generator
   always_ff @(posedge clk or negedge nrst) begin
-    if (!nrst || reset_hash) begin
-      generator_current_state <= '0; // hash_generator_state_t::H_GROUND;
+    if (!nrst) begin
+      generator_current_state <= '0;  // hash_generator_state_t::H_GROUND;
       hash_byte_pulse <= 0;
       hash_byte_out_index <= '0;
       served_hash <= '0;
@@ -158,6 +158,10 @@ module hash_generator #(
       default: begin
       end
     endcase
+
+    if (reset_hash) begin
+      generator_next_state = types_pkg::H_GROUND;
+    end
   end
 
   // Logic for next_hash_byte_pulse and next_hash_byte_out_index
@@ -186,6 +190,10 @@ module hash_generator #(
       default: begin
       end
     endcase
+
+    if (reset_hash) begin
+      next_hash_byte_out_index = '0;
+    end
   end
 
   // Logic for next_hash and next_hash_number
@@ -193,12 +201,14 @@ module hash_generator #(
     next_served_hash = served_hash;
     next_hash_number = hash_number;
 
-    if (
-        generator_current_state == types_pkg::H_EXHAUSTED &&
-        computed_hash_state == READY
-    ) begin
+    if (generator_current_state == types_pkg::H_EXHAUSTED && computed_hash_state == READY) begin
       next_served_hash = computed_hash;
       next_hash_number = hash_number + 1;
+    end
+
+    if (reset_hash) begin
+      next_served_hash = '0;
+      next_hash_number = '0;
     end
   end
 
@@ -206,7 +216,7 @@ module hash_generator #(
 
   // State transition setter for the next hash
   always_ff @(posedge clk or negedge nrst) begin
-    if (!nrst || reset_hash) begin
+    if (!nrst) begin
       computed_hash_state <= '0;
       v0 <= '0;
       v1 <= '0;
@@ -257,6 +267,10 @@ module hash_generator #(
       default: begin
       end
     endcase
+
+    if (reset_hash) begin
+      next_computed_hash_state = IDLE;
+    end
   end
 
   // This block is the combinational circuit to compute a round of the XTEA
@@ -271,16 +285,16 @@ module hash_generator #(
         if (hash_computations_count == 0) begin
           // Initialize values for hash here for the first hash computation
 
-          next_v0 = XTEADelta;
-          next_v1 = hash_computations_count;
+          next_v0  = XTEADelta;
+          next_v1  = hash_computations_count;
           next_sum = '0;
 
         end else begin
           // Initialize values for hash here for the rest of the hash
           // computations
 
-          next_v0 = v0 ^ v1;
-          next_v1 = hash_computations_count;
+          next_v0  = v0 ^ v1;
+          next_v1  = hash_computations_count;
           next_sum = '0;
         end
       end
@@ -295,6 +309,12 @@ module hash_generator #(
           (((next_v0 << 4) ^ (next_v0 >> 5)) + next_v0) ^
           (next_sum + key_memory[((next_sum >> 11) & 2'b11) * 32+:32])
         );
+    end
+
+    if (reset_hash) begin
+      next_v0  = '0;
+      next_v1  = '0;
+      next_sum = '0;
     end
   end
 
@@ -321,6 +341,11 @@ module hash_generator #(
       default: begin
       end
     endcase
+
+    if (reset_hash) begin
+      next_iteration_count = '0;
+      next_hash_computations_count = '0;
+    end
   end
 
 endmodule
