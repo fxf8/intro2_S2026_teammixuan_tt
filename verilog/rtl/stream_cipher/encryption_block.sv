@@ -47,7 +47,7 @@ module encryption_block (
   // State setter for the encryption block
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      state <= encryption_block_state_t::E_READY;
+      state <= '0; // encryption_block_state_t::E_READY;
       saved_byte_in <= '0;
       encrypted_byte_pulse <= '0;
       request_byte_pulse <= '0;
@@ -68,7 +68,7 @@ module encryption_block (
     next_request_byte_pulse = 0;
 
     case (state)
-      encryption_block_state_t::E_READY: begin
+      types_pkg::E_READY: begin
         if (byte_in_pulse) begin
           next_saved_byte_in = byte_in;
           next_state = encryption_block_state_t::E_QUERRIED;

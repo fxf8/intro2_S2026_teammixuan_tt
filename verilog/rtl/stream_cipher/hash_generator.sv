@@ -97,7 +97,7 @@ module hash_generator #(
   // State setter for the hash generator
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst || reset_hash) begin
-      generator_current_state <= hash_generator_state_t::H_GROUND;
+      generator_current_state <= '0; // hash_generator_state_t::H_GROUND;
       hash_byte_pulse <= 0;
       hash_byte_out_index <= '0;
       served_hash <= '0;
@@ -118,7 +118,7 @@ module hash_generator #(
     generator_next_state = generator_current_state;
 
     unique case (generator_current_state)
-      hash_generator_state_t::H_GROUND: begin
+      types_pkg::H_GROUND: begin
         if (request_hash_byte_pulse) begin
           generator_next_state = hash_generator_state_t::H_FIRST_QUERRY;
         end
@@ -207,7 +207,7 @@ module hash_generator #(
   // State transition setter for the next hash
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst || reset_hash) begin
-      computed_hash_state <= computed_hash_state::IDLE;
+      computed_hash_state <= '0;
       v0 <= '0;
       v1 <= '0;
       sum <= '0;
@@ -215,7 +215,6 @@ module hash_generator #(
       hash_computations_count <= '0;
 
     end else begin
-      computed_hash <= next_computed_hash;
       computed_hash_state <= next_computed_hash_state;
       v0 <= next_v0;
       v1 <= next_v1;
@@ -231,7 +230,7 @@ module hash_generator #(
     next_computed_hash_state = computed_hash_state;
 
     unique case (computed_hash_state)
-      computed_hash_state::IDLE: begin
+      IDLE: begin
         if (generator_current_state == hash_generator_state_t::H_FIRST_QUERRY) begin
           next_computed_hash_state = computed_hash_state::CALCULATING;
         end
