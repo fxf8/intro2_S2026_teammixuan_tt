@@ -251,7 +251,12 @@ syn_%: check_env
 	@mkdir -p $(MAP)
 	@if [ "$*" = "stream_cipher" ]; then \
 		echo -e "Performing Specialized Synthesis for project \`stream_cipher\`\n"; \
-		$(YOSYS) -d -p "read_verilog -sv -noblackbox $(SRC)/types_pkg.sv $(SRC)/*; synth -top $*; dfflibmap -liberty $(LIBERTY); abc -liberty $(LIBERTY); clean; write_verilog -noattr -noexpr -nohex -nodec -defparam $(MAP)/$*.v" > $*.log; \
+		$(YOSYS) -d -p "read_verilog -sv -noblackbox $(SRC)/types_pkg.sv $(SRC)/*; \
+                        synth -top $*; \
+                        dfflibmap -liberty $(LIBERTY); \
+                        abc -liberty $(LIBERTY); \
+                        clean; \
+                        write_verilog -noattr -noexpr -nohex -nodec -defparam $(MAP)/$*.v" > $*.log; \
 	else \
 		$(YOSYS) -d -p "read_verilog -sv -noblackbox $(SRC)/*; synth -top $*; dfflibmap -liberty $(LIBERTY); abc -liberty $(LIBERTY); clean; write_verilog -noattr -noexpr -nohex -nodec -defparam $(MAP)/$*.v" > $*.log; \
 	fi
