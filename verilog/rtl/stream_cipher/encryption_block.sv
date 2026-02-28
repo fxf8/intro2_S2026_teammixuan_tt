@@ -4,9 +4,7 @@ typedef enum {
   QUERRIED_AWAITING_HASH
 } encryption_block_state_t;
 
-module encryption_block #(
-    //parameters here
-) (
+module encryption_block (
     input logic clk,
     nrst,  //clock and negative-edge reset
 

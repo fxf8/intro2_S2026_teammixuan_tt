@@ -7,9 +7,7 @@ typedef enum {
   READY
 } output_holder_state_t;
 
-module output_holder #(
-    //parameters here
-) (
+module output_holder (
     input logic clk,
     nrst,  //clock and negative-edge reset
 

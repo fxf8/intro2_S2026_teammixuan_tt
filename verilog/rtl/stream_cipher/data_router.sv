@@ -1,6 +1,4 @@
-module data_router #(
-    //parameters here
-) (
+module data_router (
     input logic clk,
     nrst,  //clock and negative-edge reset
     //other signals here

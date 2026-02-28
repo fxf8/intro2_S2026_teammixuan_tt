@@ -4,9 +4,7 @@ typedef enum {
   DONE
 } interface_state_t;
 
-module interface_fsm #(
-    // parameters here
-) (
+module interface_fsm (
     input logic clk,
     nrst,  //clock and negative-edge reset
 

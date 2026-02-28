@@ -1,6 +1,4 @@
-module output_mux #(
-    //parameters here
-) (
+module output_mux (
     // Inputs from output holder
     input logic [7:0] data_in,
     input output_holder_state_t output_holder_state,

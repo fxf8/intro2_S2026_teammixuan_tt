@@ -1,9 +1,7 @@
 // Note: The purpose of this module is to convert the edge-sensitive 4 phase
 // handshake input to a single-cycle pulse
 
-module reader #(
-    //parameters here
-) (
+module reader (
     input logic clk,
     nrst,  //clock and negative-edge reset
 
