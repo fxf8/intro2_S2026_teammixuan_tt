@@ -95,7 +95,7 @@ module hash_generator #(
   // State setter for the hash generator
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst || reset_hash) begin
-      generator_current_state <= hash_generator_state_t::GROUND;
+      generator_current_state <= hash_generator_state_t::H_GROUND;
       hash_byte_pulse <= 0;
       hash_byte_out_index <= '0;
       served_hash <= '0;
@@ -116,40 +116,40 @@ module hash_generator #(
     generator_next_state = generator_current_state;
 
     unique case (generator_current_state)
-      hash_generator_state_t::GROUND: begin
+      hash_generator_state_t::H_GROUND: begin
         if (request_hash_byte_pulse) begin
-          generator_next_state = hash_generator_state_t::FIRST_QUERRY;
+          generator_next_state = hash_generator_state_t::H_FIRST_QUERRY;
         end
       end
 
-      hash_generator_state_t::FIRST_QUERRY: begin
+      hash_generator_state_t::H_FIRST_QUERRY: begin
         if (computed_hash_state == computed_hash_state::READY) begin
-          generator_next_state = hash_generator_state_t::QUERRIED;
+          generator_next_state = hash_generator_state_t::H_QUERRIED;
         end
       end
 
-      hash_generator_state_t::READY: begin
+      hash_generator_state_t::H_READY: begin
         if (request_hash_byte_pulse) begin
-          generator_next_state = hash_generator_state_t::QUERRIED;
+          generator_next_state = hash_generator_state_t::H_QUERRIED;
         end
       end
 
-      hash_generator_state_t::QUERRIED: begin
-        generator_next_state = hash_generator_state_t::PULSE_OUT;
+      hash_generator_state_t::H_QUERRIED: begin
+        generator_next_state = hash_generator_state_t::H_PULSE_OUT;
       end
 
-      hash_generator_state_t::PULSE_OUT: begin
+      hash_generator_state_t::H_PULSE_OUT: begin
         if (hash_byte_out_index < HashByteCount) begin
-          generator_next_state = hash_generator_state_t::READY;
+          generator_next_state = hash_generator_state_t::H_READY;
 
         end else begin
-          generator_next_state = hash_generator_state_t::EXHAUSTED;
+          generator_next_state = hash_generator_state_t::H_EXHAUSTED;
         end
       end
 
-      hash_generator_state_t::EXHAUSTED: begin
+      hash_generator_state_t::H_EXHAUSTED: begin
         if (computed_hash_state == computed_hash_state::READY) begin
-          generator_next_state = hash_generator_state_t::READY;
+          generator_next_state = hash_generator_state_t::H_READY;
         end
       end
 
@@ -164,18 +164,18 @@ module hash_generator #(
     next_hash_byte_out_index = hash_byte_out_index;
 
     case (generator_current_state)
-      hash_generator_state_t::QUERRIED: begin
+      hash_generator_state_t::H_QUERRIED: begin
         next_hash_byte_pulse = 1;
       end
 
-      hash_generator_state_t::PULSE_OUT: begin
+      hash_generator_state_t::H_PULSE_OUT: begin
         // At this point, hash_byte_pulse should be 1, then by the next clock
         // cycle, it will be zero
 
         next_hash_byte_out_index = hash_byte_out_index + 1;
       end
 
-      hash_generator_state_t::EXHAUSTED: begin
+      hash_generator_state_t::H_EXHAUSTED: begin
         if (computed_hash_state == computed_hash_state::READY) begin
           next_hash_byte_out_index = '0;
         end
@@ -192,7 +192,7 @@ module hash_generator #(
     next_hash_number = hash_number;
 
     if (
-        generator_current_state == hash_generator_state_t::EXHAUSTED &&
+        generator_current_state == hash_generator_state_t::H_EXHAUSTED &&
         computed_hash_state == computed_hash_state::READY
     ) begin
       next_served_hash = computed_hash;
@@ -230,7 +230,7 @@ module hash_generator #(
 
     unique case (computed_hash_state)
       computed_hash_state::IDLE: begin
-        if (generator_current_state == hash_generator_state_t::FIRST_QUERRY) begin
+        if (generator_current_state == hash_generator_state_t::H_FIRST_QUERRY) begin
           next_computed_hash_state = computed_hash_state::CALCULATING;
         end
       end

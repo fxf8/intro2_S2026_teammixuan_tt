@@ -31,15 +31,15 @@ module output_holder (
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
       data_buffer <= '0;
-      output_holder_state <= EMPTY;
+      output_holder_state <= output_holder_state_t::O_EMPTY;
 
     end else begin
       if (data_in_pulse) begin
         data_buffer <= data_in;
-        output_holder_state <= READY;
+        output_holder_state <= output_holder_state_t::O_READY;
 
-      end else if (interface_state == interface_state_t::IDLE) begin
-        output_holder_state <= EMPTY;
+      end else if (interface_state == interface_state_t::I_IDLE) begin
+        output_holder_state <= output_holder_state_t::O_EMPTY;
       end
     end
   end

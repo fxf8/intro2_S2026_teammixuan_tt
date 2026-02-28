@@ -1,4 +1,5 @@
-import types_pkg::encryption_block_state_t;
+typedef types_pkg::encryption_block_state_t encryption_block_state_t;
+typedef types_pkg::hash_generator_state_t hash_generator_state_t;
 
 module encryption_block (
     input logic clk,
@@ -25,7 +26,6 @@ module encryption_block (
     // General purpose output state
     output encryption_block_state_t encryption_block_state_out
 );
-
   encryption_block_state_t state;
   encryption_block_state_t next_state;
   assign encryption_block_state_out = state;
@@ -47,7 +47,7 @@ module encryption_block (
   // State setter for the encryption block
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      state <= encryption_block_state_t::READY;
+      state <= encryption_block_state_t::E_READY;
       saved_byte_in <= '0;
       encrypted_byte_pulse <= '0;
       request_byte_pulse <= '0;
@@ -68,28 +68,28 @@ module encryption_block (
     next_request_byte_pulse = 0;
 
     case (state)
-      encryption_block_state_t::READY: begin
+      encryption_block_state_t::E_READY: begin
         if (byte_in_pulse) begin
           next_saved_byte_in = byte_in;
-          next_state = encryption_block_state_t::QUERRIED;
+          next_state = encryption_block_state_t::E_QUERRIED;
         end
       end
 
-      encryption_block_state_t::QUERRIED: begin
+      encryption_block_state_t::E_QUERRIED: begin
         // This condition checks if the hash generator is ready to have
         // bytes requested from it
         if (
-            hash_generator_state == hash_generator_state_t::GROUND ||
-            hash_generator_state == hash_generator_state_t::READY
+            hash_generator_state == hash_generator_state_t::H_GROUND ||
+            hash_generator_state == hash_generator_state_t::H_READY
         ) begin
           next_request_byte_pulse = 1;
-          next_state = encryption_block_state_t::QUERRIED_AWAITING_HASH;
+          next_state = encryption_block_state_t::E_QUERRIED_AWAITING_HASH;
         end
       end
 
-      encryption_block_state_t::QUERRIED_AWAITING_HASH: begin
+      encryption_block_state_t::E_QUERRIED_AWAITING_HASH: begin
         if (hash_byte_pulse) begin
-          next_state = encryption_block_state_t::READY;
+          next_state = encryption_block_state_t::E_READY;
           next_encrypted_byte_pulse = 1;
         end
       end

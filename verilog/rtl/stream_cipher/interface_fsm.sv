@@ -21,7 +21,7 @@ module interface_fsm (
 
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      current_interface_state <= interface_state_t::IDLE;
+      current_interface_state <= interface_state_t::I_IDLE;
     end else begin
       current_interface_state <= next_interface_state;
     end
@@ -32,21 +32,21 @@ module interface_fsm (
     next_interface_state = current_interface_state;
 
     unique case (current_interface_state)
-      interface_state_t::IDLE: begin
+      interface_state_t::I_IDLE: begin
         if (input_request) begin
-          next_interface_state = interface_state_t::PROCESSING;
+          next_interface_state = interface_state_t::I_PROCESSING;
         end
       end
 
-      interface_state_t::PROCESSING: begin
+      interface_state_t::I_PROCESSING: begin
         if (output_is_ready) begin
-          next_interface_state = interface_state_t::DONE;
+          next_interface_state = interface_state_t::I_DONE;
         end
       end
 
-      interface_state_t::DONE: begin
+      interface_state_t::I_DONE: begin
         if (output_acknowledge) begin
-          next_interface_state = interface_state_t::IDLE;
+          next_interface_state = interface_state_t::I_IDLE;
         end
       end
     endcase
