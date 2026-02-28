@@ -71,7 +71,7 @@ module encryption_block (
       types_pkg::E_READY: begin
         if (byte_in_pulse) begin
           next_saved_byte_in = byte_in;
-          next_state = encryption_block_state_t::E_QUERRIED;
+          next_state = types_pkg::E_QUERRIED;
         end
       end
 
@@ -79,17 +79,17 @@ module encryption_block (
         // This condition checks if the hash generator is ready to have
         // bytes requested from it
         if (
-            hash_generator_state == hash_generator_state_t::H_GROUND ||
-            hash_generator_state == hash_generator_state_t::H_READY
+            hash_generator_state == types_pkg::H_GROUND ||
+            hash_generator_state == types_pkg::H_READY
         ) begin
           next_request_byte_pulse = 1;
-          next_state = encryption_block_state_t::E_QUERRIED_AWAITING_HASH;
+          next_state = types_pkg::E_QUERRIED_AWAITING_HASH;
         end
       end
 
       types_pkg::E_QUERRIED_AWAITING_HASH: begin
         if (hash_byte_pulse) begin
-          next_state = encryption_block_state_t::E_READY;
+          next_state = types_pkg::E_READY;
           next_encrypted_byte_pulse = 1;
         end
       end
