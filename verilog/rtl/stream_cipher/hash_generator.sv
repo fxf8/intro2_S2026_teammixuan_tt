@@ -39,7 +39,7 @@ module hash_generator #(
     IDLE,  // The starting initial state when no hash is computed
     READY,  // When the hash is computed and the marker is within the hashed bounds
     CALCULATING  // When the hash is being computed
-  } next_hash_state_t;
+  } computed_hash_state_t;
 
   // This is the amount of bytes in the hash
   localparam int HashByteCount = 64 / 8;  // 64 / 8 = 8
@@ -73,8 +73,8 @@ module hash_generator #(
   logic [31:0] next_hash_number;
 
   // Values used to compute the next hash ----
-  next_hash_state_t computed_hash_state;
-  next_hash_state_t next_computed_hash_state;
+  computed_hash_state_t computed_hash_state;
+  computed_hash_state_t next_computed_hash_state;
 
   logic [31:0] v0;
   logic [31:0] v1;
@@ -104,7 +104,7 @@ module hash_generator #(
   // State setter for the hash generator
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      generator_current_state <= GROUND;
+      generator_current_state <= hash_generator_state_t::GROUND;
       hash_byte_pulse <= 0;
       hash_byte_out_index <= '0;
       served_hash <= '0;
@@ -125,40 +125,40 @@ module hash_generator #(
     generator_next_state = generator_current_state;
 
     unique case (generator_current_state)
-      GROUND: begin
+      hash_generator_state_t::GROUND: begin
         if (request_hash_byte_pulse) begin
-          generator_next_state = FIRST_QUERRY;
+          generator_next_state = hash_generator_state_t::FIRST_QUERRY;
         end
       end
 
-      FIRST_QUERRY: begin
-        if (computed_hash == READY) begin
-          generator_next_state = QUERRIED;
+      hash_generator_state_t::FIRST_QUERRY: begin
+        if (computed_hash_state == computed_hash_state::READY) begin
+          generator_next_state = hash_generator_state_t::QUERRIED;
         end
       end
 
-      READY: begin
+      hash_generator_state_t::READY: begin
         if (request_hash_byte_pulse) begin
-          generator_next_state = QUERRIED;
+          generator_next_state = hash_generator_state_t::QUERRIED;
         end
       end
 
-      QUERRIED: begin
-        generator_next_state = PULSE_OUT;
+      hash_generator_state_t::QUERRIED: begin
+        generator_next_state = hash_generator_state_t::PULSE_OUT;
       end
 
-      PULSE_OUT: begin
+      hash_generator_state_t::PULSE_OUT: begin
         if (hash_byte_out_index < HashByteCount) begin
-          generator_next_state = READY;
+          generator_next_state = hash_generator_state_t::READY;
 
         end else begin
-          generator_next_state = EXHAUSTED;
+          generator_next_state = hash_generator_state_t::EXHAUSTED;
         end
       end
 
-      EXHAUSTED: begin
-        if (computed_hash_state == READY) begin
-          generator_next_state = READY;
+      hash_generator_state_t::EXHAUSTED: begin
+        if (computed_hash_state == computed_hash_state::READY) begin
+          generator_next_state = hash_generator_state_t::READY;
         end
       end
 
@@ -173,19 +173,19 @@ module hash_generator #(
     next_hash_byte_out_index = hash_byte_out_index;
 
     case (generator_current_state)
-      QUERRIED: begin
+      hash_generator_state_t::QUERRIED: begin
         next_hash_byte_pulse = 1;
       end
 
-      PULSE_OUT: begin
+      hash_generator_state_t::PULSE_OUT: begin
         // At this point, hash_byte_pulse should be 1, then by the next clock
         // cycle, it will be zero
 
         next_hash_byte_out_index = hash_byte_out_index + 1;
       end
 
-      EXHAUSTED: begin
-        if (computed_hash_state == READY) begin
+      hash_generator_state_t::EXHAUSTED: begin
+        if (computed_hash_state == computed_hash_state::READY) begin
           next_hash_byte_out_index = '0;
         end
       end
@@ -200,7 +200,10 @@ module hash_generator #(
     next_served_hash = served_hash;
     next_hash_number = hash_number;
 
-    if (generator_current_state == EXHAUSTED && computed_hash_state == READY) begin
+    if (
+        generator_current_state == hash_generator_state_t::EXHAUSTED &&
+        computed_hash_state == computed_hash_state::READY
+    ) begin
       next_served_hash = computed_hash;
       next_hash_number = hash_number + 1;
     end
@@ -211,7 +214,7 @@ module hash_generator #(
   // State transition setter for the next hash
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      computed_hash_state <= IDLE;
+      computed_hash_state <= computed_hash_state::IDLE;
       v0 <= '0;
       v1 <= '0;
       sum <= '0;
@@ -235,19 +238,19 @@ module hash_generator #(
     next_computed_hash_state = computed_hash_state;
 
     unique case (computed_hash_state)
-      IDLE: begin
-        if (generator_current_state == FIRST_QUERRY) begin
-          next_computed_hash_state = CALCULATING;
+      computed_hash_state::IDLE: begin
+        if (generator_current_state == hash_generator_state_t::FIRST_QUERRY) begin
+          next_computed_hash_state = computed_hash_state::CALCULATING;
         end
       end
 
-      CALCULATING: begin
+      computed_hash_state::CALCULATING: begin
         if (iteration_count >= HASH_ITERATIONS) begin
-          next_computed_hash_state = READY;
+          next_computed_hash_state = computed_hash_state::READY;
         end
       end
 
-      READY: begin
+      computed_hash_state::READY: begin
         if (hash_number >= hash_computations_count) begin
           // If the hash_number is equal to the amount of hashes computed,
           // that means we can start computing the next hash since it means
@@ -255,7 +258,7 @@ module hash_generator #(
           // served hash. Similarily, if the hash_computations_count is more
           // than hash_number, we cannot compute the next hash since some
           // some hashes would be skipped
-          next_computed_hash_state = CALCULATING;
+          next_computed_hash_state = computed_hash_state::CALCULATING;
         end
       end
 
@@ -271,7 +274,7 @@ module hash_generator #(
     next_v1  = v1;
     next_sum = sum;
 
-    if (computed_hash_state == CALCULATING) begin
+    if (computed_hash_state == computed_hash_state::CALCULATING) begin
       if (iteration_count == 0) begin
         if (hash_computations_count == 0) begin
           // Initialize values for hash here for the first hash computation
@@ -306,7 +309,7 @@ module hash_generator #(
   // Logic for iteration_count, next_hash_computations_count
   always_comb begin
     case (computed_hash_state)
-      CALCULATING: begin
+      computed_hash_state::CALCULATING: begin
         // Apply one round of the XTEA algorithm here
 
         // Note: this is the complement of the condition to transition from
