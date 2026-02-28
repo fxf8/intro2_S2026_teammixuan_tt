@@ -75,7 +75,7 @@ module encryption_block (
         end
       end
 
-      encryption_block_state_t::E_QUERRIED: begin
+      types_pkg::E_QUERRIED: begin
         // This condition checks if the hash generator is ready to have
         // bytes requested from it
         if (
@@ -87,7 +87,7 @@ module encryption_block (
         end
       end
 
-      encryption_block_state_t::E_QUERRIED_AWAITING_HASH: begin
+      types_pkg::E_QUERRIED_AWAITING_HASH: begin
         if (hash_byte_pulse) begin
           next_state = encryption_block_state_t::E_READY;
           next_encrypted_byte_pulse = 1;

@@ -1,4 +1,6 @@
-import types_pkg::interface_state_t;
+// import types_pkg::interface_state_t;
+
+typedef types_pkg::interface_state_t interface_state_t;
 
 module interface_fsm (
     input logic clk,
@@ -38,13 +40,13 @@ module interface_fsm (
         end
       end
 
-      interface_state_t::I_PROCESSING: begin
+      types_pkg::I_PROCESSING: begin
         if (output_is_ready) begin
           next_interface_state = interface_state_t::I_DONE;
         end
       end
 
-      interface_state_t::I_DONE: begin
+      types_pkg::I_DONE: begin
         if (output_acknowledge) begin
           next_interface_state = interface_state_t::I_IDLE;
         end

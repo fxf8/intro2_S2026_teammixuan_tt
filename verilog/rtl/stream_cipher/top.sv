@@ -1,4 +1,7 @@
-import types_pkg::*;
+typedef types_pkg::interface_state_t interface_state_t;
+typedef types_pkg::encryption_block_state_t encryption_block_state_t;
+typedef types_pkg::hash_generator_state_t hash_generator_state_t;
+typedef types_pkg::output_holder_state_t output_holder_state_t;
 
 module top #(
     //parameters here
@@ -52,7 +55,7 @@ module top #(
 
   // Outputs from the output holder
   output_holder_state_t output_holder_state;
-  output logic [7:0] output_holder_data_out;
+  logic [7:0] output_holder_data_out;
 
   // Hardware block instantiations
 

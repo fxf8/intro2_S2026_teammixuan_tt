@@ -4,7 +4,9 @@
 // XTEA Delta derived from the golden ratio: 32'h9e3779b9)
 // v[1] = 32 bit counted value
 
-import types_pkg::hash_generator_state_t;
+// import types_pkg::hash_generator_state_t;
+
+typedef types_pkg::hash_generator_state_t hash_generator_state_t;
 
 module hash_generator #(
     parameter int HASH_ITERATIONS = 8
@@ -122,23 +124,23 @@ module hash_generator #(
         end
       end
 
-      hash_generator_state_t::H_FIRST_QUERRY: begin
+      types_pkg::H_FIRST_QUERRY: begin
         if (computed_hash_state == computed_hash_state::READY) begin
           generator_next_state = hash_generator_state_t::H_QUERRIED;
         end
       end
 
-      hash_generator_state_t::H_READY: begin
+      types_pkg::H_READY: begin
         if (request_hash_byte_pulse) begin
           generator_next_state = hash_generator_state_t::H_QUERRIED;
         end
       end
 
-      hash_generator_state_t::H_QUERRIED: begin
+      types_pkg::H_QUERRIED: begin
         generator_next_state = hash_generator_state_t::H_PULSE_OUT;
       end
 
-      hash_generator_state_t::H_PULSE_OUT: begin
+      types_pkg::H_PULSE_OUT: begin
         if (hash_byte_out_index < HashByteCount) begin
           generator_next_state = hash_generator_state_t::H_READY;
 
@@ -147,7 +149,7 @@ module hash_generator #(
         end
       end
 
-      hash_generator_state_t::H_EXHAUSTED: begin
+      types_pkg::H_EXHAUSTED: begin
         if (computed_hash_state == computed_hash_state::READY) begin
           generator_next_state = hash_generator_state_t::H_READY;
         end
@@ -235,7 +237,7 @@ module hash_generator #(
         end
       end
 
-      computed_hash_state::CALCULATING: begin
+      CALCULATING: begin
         if (iteration_count >= HASH_ITERATIONS) begin
           next_computed_hash_state = computed_hash_state::READY;
         end

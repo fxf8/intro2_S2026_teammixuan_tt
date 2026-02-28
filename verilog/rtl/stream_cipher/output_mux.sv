@@ -1,5 +1,10 @@
+/*
 import types_pkg::output_holder_state_t;
 import types_pkg::interface_state_t;
+*/
+
+typedef types_pkg::output_holder_state_t output_holder_state_t;
+typedef types_pkg::interface_state_t interface_state_t;
 
 module output_mux (
     // Inputs from output holder
