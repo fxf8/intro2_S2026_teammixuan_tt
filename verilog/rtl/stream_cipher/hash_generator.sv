@@ -26,6 +26,8 @@ module hash_generator #(
     nrst,  //clock and negative-edge reset
     //other signals here
 
+    input logic reset_hash,
+
     // Input receivd from key storage
     input logic [127:0] key_memory,
 
@@ -105,7 +107,7 @@ module hash_generator #(
 
   // State setter for the hash generator
   always_ff @(posedge clk or negedge nrst) begin
-    if (!nrst) begin
+    if (!nrst || reset_hash) begin
       generator_current_state <= hash_generator_state_t::GROUND;
       hash_byte_pulse <= 0;
       hash_byte_out_index <= '0;
@@ -215,7 +217,7 @@ module hash_generator #(
 
   // State transition setter for the next hash
   always_ff @(posedge clk or negedge nrst) begin
-    if (!nrst) begin
+    if (!nrst || reset_hash) begin
       computed_hash_state <= computed_hash_state::IDLE;
       v0 <= '0;
       v1 <= '0;
