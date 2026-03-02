@@ -283,11 +283,18 @@ sim_%_syn: syn_%
 #Show the synthesied diagram
 cells : $(ICE) $(SRC) $(FPGA_TOP_DIR) $(PINMAP)
 	# lint with Verilator
-	verilator --lint-only --top-module fpga_top -Werror-latch -y $(SRC) $(FPGA_TOP_DIR)
+	# verilator --lint-only --top-module fpga_top -Werror-latch -y $(SRC) $(FPGA_TOP_DIR)
+	verilator --lint-only --top-module fpga_top -Werror-latch $(SRC)/types_pkg.sv $(SRC)/*.sv $(FPGA_TOP_DIR)
 	# if build folder doesn't exist, create it
 	mkdir -p $(BUILD)
 	# synthesize using Yosys
-	$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/* $(FPGA_TOP_DIR); synth -top fpga_top; show -format svg -viewer gimp"
+	@echo -e "Value of PROJECT: $(PROJECT)\n"
+	@if [ "$(PROJECT)" = "stream_cipher" ]; then \
+		echo -e "Performing Specialized Synthesis for project \`stream_cipher\`\n"; \
+		$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/types_pkg.sv $(SRC)/* $(FPGA_TOP_DIR); synth -top fpga_top; show -format svg -viewer gimp" \
+	else
+		$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/* $(FPGA_TOP_DIR); synth -top fpga_top; show -format svg -viewer gimp" \
+	fi
 
 #TODO: add cells_% target
 
