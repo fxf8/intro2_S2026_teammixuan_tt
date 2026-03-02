@@ -1,7 +1,9 @@
 module data_router (
+    /*
     input logic clk,
     nrst,  //clock and negative-edge reset
     //other signals here
+    */
 
     // Inputs received from reader
     input logic [7:0] input_byte_pulsed,

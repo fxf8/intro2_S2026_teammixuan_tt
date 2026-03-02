@@ -5,8 +5,6 @@
 // import types_pkg::output_holder_state_t;
 // import types_pkg::interface_state_t;
 
-typedef types_pkg::output_holder_state_t output_holder_state_t;
-typedef types_pkg::interface_state_t interface_state_t;
 
 module output_holder (
     input logic clk,
@@ -17,14 +15,17 @@ module output_holder (
     input logic data_in_pulse,
 
     // Inputs from interface fsm
-    input interface_state_t interface_state,
+    input types_pkg::interface_state_t interface_state,
 
     // Output sent to interface fsm
-    output output_holder_state_t output_holder_state_out,
+    output types_pkg::output_holder_state_t output_holder_state_out,
 
     // Output sent to output mux
     output logic [7:0] data_out
 );
+  typedef types_pkg::output_holder_state_t output_holder_state_t;
+  typedef types_pkg::interface_state_t interface_state_t;
+
   logic [7:0] data_buffer;
   assign data_out = data_buffer;
 

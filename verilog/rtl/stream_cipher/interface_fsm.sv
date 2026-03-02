@@ -1,6 +1,5 @@
 // import types_pkg::interface_state_t;
 
-
 module interface_fsm (
     input logic clk,
     nrst,  //clock and negative-edge reset
@@ -8,7 +7,8 @@ module interface_fsm (
     // Handshake signals
     input logic input_request,  // Received by the chip input pins
     input logic output_acknowledge,  // Received by the chip input pins
-    input logic output_is_ready,  // This is received by the output holder block
+    // Received by the output holder block
+    input types_pkg::output_holder_state_t output_holder_state,
 
     output types_pkg::interface_state_t interface_state_out
 );
@@ -39,7 +39,7 @@ module interface_fsm (
       end
 
       types_pkg::I_PROCESSING: begin
-        if (output_is_ready) begin
+        if (output_holder_state == types_pkg::O_READY) begin
           next_interface_state = types_pkg::I_DONE;
         end
       end

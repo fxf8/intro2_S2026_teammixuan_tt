@@ -17,7 +17,7 @@ module top #(
     input  logic output_acknowledge,
 
     // Output Byte
-    input logic [7:0] output_byte
+    output logic [7:0] output_byte
 );
   typedef types_pkg::interface_state_t interface_state_t;
   typedef types_pkg::encryption_block_state_t encryption_block_state_t;
@@ -90,15 +90,12 @@ module top #(
       // Handshake signals
       .input_request(input_request),
       .output_acknowledge(output_acknowledge),
-      .output_is_ready(),  // Note: This is received from `output_holder`
+      .output_holder_state(output_holder_state),  // Note: This is received from `output_holder`
 
       .interface_state_out(interface_state)
   );
 
   data_router data_router_inst (
-      .clk (clk),
-      .nrst(nrst),
-
       // Inputs received from reader
       .input_byte_pulsed(reader_input_byte_pulsed),
       .is_key_pulsed(reader_is_key_pulsed),
@@ -136,7 +133,7 @@ module top #(
       .key_memory(key_memory),
 
       // Input received from encryption block
-      .request_hash_byte_pulse(),
+      .request_hash_byte_pulse(request_byte_pulse),
 
       // Signals sent to encryption block
       .hash_byte_out(hash_byte),
