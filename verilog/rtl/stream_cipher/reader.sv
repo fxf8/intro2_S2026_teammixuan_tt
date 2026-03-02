@@ -1,10 +1,6 @@
 // Note: The purpose of this module is to convert the edge-sensitive 4 phase
 // handshake input to a single-cycle pulse
 
-// import types_pkg::interface_state_t;
-
-typedef types_pkg::interface_state_t interface_state_t;
-
 module reader (
     input logic clk,
     nrst,  //clock and negative-edge reset
@@ -18,7 +14,7 @@ module reader (
     input logic input_request,
 
     // FSM State (received from fsm state block)
-    input interface_state_t fsm_state,
+    input types_pkg::interface_state_t fsm_state,
 
     // Signals sent to the data router
     output logic [7:0] input_byte_pulsed,  // This is the input byte that *gets pulsed*
@@ -28,6 +24,7 @@ module reader (
     // Signal sent to the hash generator
     output logic reset_hash_pulse
 );
+  typedef types_pkg::interface_state_t interface_state_t;
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
       input_byte_pulsed <= '0;

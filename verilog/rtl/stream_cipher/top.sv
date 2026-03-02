@@ -1,8 +1,3 @@
-typedef types_pkg::interface_state_t interface_state_t;
-typedef types_pkg::encryption_block_state_t encryption_block_state_t;
-typedef types_pkg::hash_generator_state_t hash_generator_state_t;
-typedef types_pkg::output_holder_state_t output_holder_state_t;
-
 module top #(
     //parameters here
 ) (
@@ -24,6 +19,11 @@ module top #(
     // Output Byte
     input logic [7:0] output_byte
 );
+  typedef types_pkg::interface_state_t interface_state_t;
+  typedef types_pkg::encryption_block_state_t encryption_block_state_t;
+  typedef types_pkg::hash_generator_state_t hash_generator_state_t;
+  typedef types_pkg::output_holder_state_t output_holder_state_t;
+
   // Outputs from the reader module
   logic [7:0] reader_input_byte_pulsed;
   logic reader_is_key_pulsed;

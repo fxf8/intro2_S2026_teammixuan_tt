@@ -1,6 +1,3 @@
-typedef types_pkg::encryption_block_state_t encryption_block_state_t;
-typedef types_pkg::hash_generator_state_t hash_generator_state_t;
-
 module encryption_block (
     input logic clk,
     nrst,  //clock and negative-edge reset
@@ -12,7 +9,7 @@ module encryption_block (
     // Hash generator pins:
 
     // This pin allows us to know when this block can request a hashed byte
-    input hash_generator_state_t hash_generator_state,
+    input types_pkg::hash_generator_state_t hash_generator_state,
 
     output logic request_byte_pulse_out,
 
@@ -24,8 +21,11 @@ module encryption_block (
     output logic encrypted_byte_pulse_out,
 
     // General purpose output state
-    output encryption_block_state_t encryption_block_state_out
+    output types_pkg::encryption_block_state_t encryption_block_state_out
 );
+  typedef types_pkg::hash_generator_state_t hash_generator_state_t;
+  typedef types_pkg::encryption_block_state_t encryption_block_state_t;
+
   encryption_block_state_t state;
   encryption_block_state_t next_state;
   assign encryption_block_state_out = state;
@@ -47,7 +47,7 @@ module encryption_block (
   // State setter for the encryption block
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      state <= '0; // encryption_block_state_t::E_READY;
+      state <= '0;  // encryption_block_state_t::E_READY;
       saved_byte_in <= '0;
       encrypted_byte_pulse <= '0;
       request_byte_pulse <= '0;

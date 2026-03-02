@@ -1,18 +1,10 @@
-/*
-import types_pkg::output_holder_state_t;
-import types_pkg::interface_state_t;
-*/
-
-typedef types_pkg::output_holder_state_t output_holder_state_t;
-typedef types_pkg::interface_state_t interface_state_t;
-
 module output_mux (
     // Inputs from output holder
     input logic [7:0] data_in,
-    input output_holder_state_t output_holder_state,
+    input types_pkg::output_holder_state_t output_holder_state,
 
     // Inputs from interface fsm
-    input interface_state_t interface_state,
+    input types_pkg::interface_state_t interface_state,
 
     // Outputs sent to the output of the chip
     output logic [7:0] data_out,

@@ -1,6 +1,5 @@
 // import types_pkg::interface_state_t;
 
-typedef types_pkg::interface_state_t interface_state_t;
 
 module interface_fsm (
     input logic clk,
@@ -11,10 +10,9 @@ module interface_fsm (
     input logic output_acknowledge,  // Received by the chip input pins
     input logic output_is_ready,  // This is received by the output holder block
 
-    output interface_state_t interface_state_out
+    output types_pkg::interface_state_t interface_state_out
 );
-  //module code here
-  // assign a = clk && nrst;
+  typedef types_pkg::interface_state_t interface_state_t;
 
   interface_state_t next_interface_state;
   interface_state_t current_interface_state;

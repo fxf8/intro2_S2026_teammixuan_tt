@@ -4,10 +4,6 @@
 // XTEA Delta derived from the golden ratio: 32'h9e3779b9)
 // v[1] = 32 bit counted value
 
-// import types_pkg::hash_generator_state_t;
-
-typedef types_pkg::hash_generator_state_t hash_generator_state_t;
-
 module hash_generator #(
     parameter int HASH_ITERATIONS = 8
 ) (
@@ -26,8 +22,9 @@ module hash_generator #(
     // Signals sent to encryption block
     output logic [7:0] hash_byte_out,
     output logic hash_byte_pulse_out,
-    output hash_generator_state_t generator_current_state_out
+    output types_pkg::hash_generator_state_t generator_current_state_out
 );
+  typedef types_pkg::hash_generator_state_t hash_generator_state_t;
   typedef enum {
     IDLE,  // The starting initial state when no hash is computed
     READY,  // When the hash is computed and the marker is within the hashed bounds
