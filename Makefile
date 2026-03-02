@@ -231,7 +231,11 @@ check_env:
 sim_%_src: 
 	@echo -e "Creating executable for source simulation...\n"
 	@mkdir -p $(BUILD) && rm -rf $(BUILD)/*
-	@iverilog -g2012 -o $(BUILD)/$*_tb -Y .sv -y $(SRC) $(TB)/$*_tb.sv
+	@if [ "$*" = "stream_cipher" ]; then \
+		iverilog -g2012 -o $(BUILD)/$*_tb $(SRC)/types_pkg.sv -Y .sv -y $(SRC) $(TB)/$*_tb.sv; \
+	else \
+		iverilog -g2012 -o $(BUILD)/$*_tb -Y .sv -y $(SRC) $(TB)/$*_tb.sv; \
+	fi
 	@echo -e "\nSource Compilation complete!\n"
 	@echo -e "Simulating source...\n"
 	@vvp -l vvp_sim.log $(BUILD)/$*_tb
@@ -291,9 +295,9 @@ cells : $(ICE) $(SRC) $(FPGA_TOP_DIR) $(PINMAP)
 	@echo -e "Value of PROJECT: $(PROJECT)\n"
 	@if [ "$(PROJECT)" = "stream_cipher" ]; then \
 		echo -e "Performing Specialized Synthesis for project \`stream_cipher\`\n"; \
-		$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/types_pkg.sv $(SRC)/* $(FPGA_TOP_DIR); synth -top fpga_top; show -format svg -viewer gimp" \
+		$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/types_pkg.sv $(SRC)/* $(FPGA_TOP_DIR); synth -top fpga_top; show -format svg -viewer gimp"; \
 	else
-		$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/* $(FPGA_TOP_DIR); synth -top fpga_top; show -format svg -viewer gimp" \
+		$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/* $(FPGA_TOP_DIR); synth -top fpga_top; show -format svg -viewer gimp"; \
 	fi
 
 #TODO: add cells_% target
