@@ -231,7 +231,7 @@ check_env:
 sim_%_src: 
 	@echo -e "Creating executable for source simulation...\n"
 	@mkdir -p $(BUILD) && rm -rf $(BUILD)/*
-	@if [ "$*" = "stream_cipher" ]; then \
+	@if [ "$(PROJECT)" = "stream_cipher" ]; then \
 		iverilog -g2012 -o $(BUILD)/$*_tb $(SRC)/types_pkg.sv -Y .sv -y $(SRC) $(TB)/$*_tb.sv; \
 	else \
 		iverilog -g2012 -o $(BUILD)/$*_tb -Y .sv -y $(SRC) $(TB)/$*_tb.sv; \
