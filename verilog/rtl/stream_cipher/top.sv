@@ -1,6 +1,4 @@
-module top #(
-    //parameters here
-) (
+module top (
     input logic clk,
     nrst,  // clock and negative-edge reset
     //other signals here
