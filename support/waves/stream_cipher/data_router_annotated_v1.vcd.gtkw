@@ -1,0 +1,45 @@
+[*]
+[*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
+[*] Tue Mar  3 00:30:13 2026
+[*]
+[dumpfile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/data_router.vcd"
+[dumpfile_mtime] "Tue Mar  3 00:23:39 2026"
+[dumpfile_size] 1654
+[savefile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/data_router_annotated_v1.vcd.gtkw"
+[timestart] 0
+[size] 1900 994
+[pos] -959 -1
+*-14.822515 145000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] data_router_tb.
+[sst_width] 269
+[signals_width] 254
+[sst_expanded] 1
+[sst_vpaned_height] 293
+@29
+data_router_tb.tb_clk
+@420
+data_router_tb.tb_test_num
+@200
+-
+@22
+data_router_tb.input_byte_pulsed[7:0]
+@28
+data_router_tb.input_pulse
+@200
+-
+@28
+data_router_tb.is_key_pulsed
+@200
+-
+@22
+data_router_tb.key_byte[7:0]
+@28
+data_router_tb.key_byte_pulse
+@200
+-
+@22
+data_router_tb.byte_pulsed[7:0]
+@28
+data_router_tb.byte_pulse
+[pattern_trace] 1
+[pattern_trace] 0
