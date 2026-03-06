@@ -1,0 +1,28 @@
+[*]
+[*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
+[*] Fri Mar  6 15:17:58 2026
+[*]
+[dumpfile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/top.vcd"
+[dumpfile_mtime] "Fri Mar  6 15:14:54 2026"
+[dumpfile_size] 9456
+[savefile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/top_annotated.gtkw"
+[timestart] 0
+[size] 1900 994
+[pos] -959 -1
+*-14.857677 1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top_tb.
+[sst_width] 269
+[signals_width] 134
+[sst_expanded] 1
+[sst_vpaned_height] 293
+@28
+top_tb.tb_clk
+@420
+top_tb.tb_test_num
+@200
+-
+@28
+top_tb.input_request
+top_tb.is_key
+[pattern_trace] 1
+[pattern_trace] 0
