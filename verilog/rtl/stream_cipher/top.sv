@@ -39,6 +39,7 @@ module top (
 
   // Output from the key storage
   logic [127:0] key_memory;
+  logic received_key_byte_pulse;
 
   // Outputs from the hash generator
   logic [7:0] hash_byte;
@@ -73,9 +74,9 @@ module top (
       .fsm_state(interface_state),
 
       // Signals sent to the data router
-      .input_byte_pulsed(reader_input_byte_pulsed),
-      .is_key_pulsed(reader_is_key_pulsed),
-      .input_byte_pulse(reader_input_byte_pulse),
+      .input_byte_pulsed_out(reader_input_byte_pulsed),
+      .is_key_pulsed_out(reader_is_key_pulsed),
+      .input_byte_pulse_out(reader_input_byte_pulse),
 
       // Signal sent to the hash generator
       .reset_hash_pulse(reader_reset_hash_pulse)
@@ -117,7 +118,10 @@ module top (
       .key_byte_pulse(data_router_key_byte_pulse),
 
       // Output sent to the hash generator
-      .key_memory_out(key_memory)
+      .key_memory_out(key_memory),
+
+      // Output sent to output holder
+      .received_key_byte_pulse_out(received_key_byte_pulse)
   );
 
 
@@ -165,13 +169,15 @@ module top (
       .encryption_block_state_out(encryption_block_state)
   );
 
+  logic output_holder_input_pulse;
+  assign output_holder_input_pulse = encrypted_byte_pulse || received_key_byte_pulse;
   output_holder output_holder_inst (
       .clk (clk),
       .nrst(nrst),
 
       // Inputs received from encryption block
       .data_in(encrypted_byte),
-      .data_in_pulse(encrypted_byte_pulse),
+      .data_in_pulse(output_holder_input_pulse),
 
       // Inputs received from interface fsm
       .interface_state(interface_state),
