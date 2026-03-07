@@ -47,7 +47,7 @@ module fpga_top_tb();
 
     // Signal dump
     initial begin
-        $dumpfile ("support/waves/stream_cipher/src1.vcd");
+        $dumpfile ("support/waves/stream_cipher/top.vcd");
         $dumpvars;
     end
     

@@ -89,8 +89,8 @@ module top_tb ();
     // etc...
 
     input_byte = '0;
-    is_key = '0;
-    reset_hash = '0;
+    is_key = 0;
+    reset_hash = 0;
 
     input_request = '0;
     output_acknowledge = '0;
@@ -111,6 +111,14 @@ module top_tb ();
     tb_test_case = "Providing Key Input";
     tb_test_num  = 2;
 
+    @(negedge tb_clk);
+    input_byte = 8'hA;
+    is_key = 1;
+    input_request = 1;
+    repeat (10) @(negedge tb_clk);
+    output_acknowledge = 1;
+
+    reset_dut();
 
     $display("\nTest cases passed: %1d/%1d\n", tb_passed, tb_test_num);
     $finish;
