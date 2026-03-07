@@ -1,28 +1,103 @@
 [*]
 [*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
-[*] Fri Mar  6 15:17:58 2026
+[*] Sat Mar  7 03:40:06 2026
 [*]
 [dumpfile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/top.vcd"
-[dumpfile_mtime] "Fri Mar  6 15:14:54 2026"
-[dumpfile_size] 9456
+[dumpfile_mtime] "Sat Mar  7 03:37:38 2026"
+[dumpfile_size] 8333
 [savefile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/top_annotated.gtkw"
 [timestart] 0
 [size] 1900 994
 [pos] -959 -1
-*-14.857677 1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-15.065701 85000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top_tb.
-[sst_width] 269
-[signals_width] 134
+[treeopen] top_tb.DUT.
+[sst_width] 332
+[signals_width] 254
 [sst_expanded] 1
 [sst_vpaned_height] 293
-@28
+@200
+-Misc Pins
+@29
 top_tb.tb_clk
 @420
 top_tb.tb_test_num
 @200
 -
+-Chip Input (Testbench)
+@c00022
+top_tb.input_byte[7:0]
 @28
-top_tb.input_request
+(0)top_tb.input_byte[7:0]
+(1)top_tb.input_byte[7:0]
+(2)top_tb.input_byte[7:0]
+(3)top_tb.input_byte[7:0]
+(4)top_tb.input_byte[7:0]
+(5)top_tb.input_byte[7:0]
+(6)top_tb.input_byte[7:0]
+(7)top_tb.input_byte[7:0]
+@1401200
+-group_end
+@28
 top_tb.is_key
+top_tb.input_request
+@200
+-
+-Chip Output
+@22
+top_tb.output_byte[7:0]
+@28
+top_tb.output_byte_is_ready
+top_tb.input_acknowledged
+@200
+-
+-Interface FSM
+@28
+top_tb.DUT.interface_fsm_inst.current_interface_state[1:0]
+@200
+-
+-Reader
+-Inputs
+@22
+top_tb.DUT.reader_inst.input_byte[7:0]
+@28
+top_tb.DUT.reader_inst.is_key
+top_tb.DUT.reader_inst.reset_hash
+top_tb.DUT.reader_inst.input_request
+@200
+-Outputs
+@28
+top_tb.DUT.reader_inst.input_byte_pulse_out
+@22
+top_tb.DUT.reader_inst.input_byte_pulsed_out[7:0]
+@28
+top_tb.DUT.reader_inst.is_key_pulsed_out
+top_tb.DUT.reader_inst.reset_hash_pulse
+@200
+-
+-Data Router
+-Outputs
+@22
+top_tb.DUT.data_router_inst.key_byte[7:0]
+@28
+top_tb.DUT.data_router_inst.key_byte_pulse
+@200
+-
+@22
+top_tb.DUT.data_router_inst.byte_pulsed[7:0]
+@28
+top_tb.DUT.data_router_inst.byte_pulse
+@200
+-
+-Key Storage
+@28
+top_tb.DUT.key_storage_inst.received_key_byte_pulse_out
+@22
+top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+@200
+-
+-Output Holder
+@28
+top_tb.DUT.output_holder_inst.output_holder_state_out
 [pattern_trace] 1
 [pattern_trace] 0
