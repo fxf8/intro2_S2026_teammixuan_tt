@@ -21,10 +21,10 @@ module top_tb ();
   logic reset_hash;
 
   // 4-Phase-Handshake Interfacing pins in order of change
-  logic input_request;
-  logic input_acknowledged;
-  logic output_byte_is_ready;
-  logic output_acknowledge;
+  logic input_request;  // Chip Input
+  logic input_acknowledged;  // Chip Output
+  logic output_byte_is_ready;  // Chip Output
+  logic output_acknowledge;  // Chip Input
 
   // Output Byte
   logic [7:0] output_byte;
@@ -35,7 +35,7 @@ module top_tb ();
   string tb_test_case;
 
   // Task for standard DUT reset procedure
-  task reset_dut;
+  task static reset_dut;
     begin
       // Activate the reset
       tb_nrst = 1'b0;
@@ -46,6 +46,69 @@ module top_tb ();
       tb_nrst = 1'b1;
       @(negedge tb_clk);
       @(negedge tb_clk);
+    end
+  endtask
+
+  task static wait_for_chip_output();
+    begin
+      wait (output_byte_is_ready == 1);
+    end
+  endtask
+
+  task static input_byte_task(input logic [7:0] t_input_byte, input logic t_is_key);
+    begin
+      if (input_acknowledged || input_request) begin
+        wait_for_chip_output();
+
+        output_acknowledge = 1;  // Acknowledge the output of the chip
+
+        wait ((input_acknowledged == 0) && (output_byte_is_ready == 0));
+      end
+
+      output_acknowledge = 0;
+
+      input_byte = t_input_byte;
+      is_key = t_is_key;
+      input_request = 1;
+
+      wait (input_acknowledged == 1);
+
+      input_request = 0;
+    end
+  endtask
+
+  task static test_provide_key_input();
+    begin
+      tb_test_case = "Providing Key Input";
+      tb_test_num  = 2;
+
+      @(negedge tb_clk);
+      input_byte = 8'hA;
+      is_key = 1;
+      input_request = 1;
+      repeat (10) @(negedge tb_clk);
+      input_request = 0;
+      @(negedge tb_clk);
+      output_acknowledge = 1;
+      repeat (3) @(negedge tb_clk);
+
+      reset_dut();
+    end
+  endtask
+
+  task static test_provide_key_input_rollover();
+    // This task will test the behavior of a key input larger than 128 bits,
+    // resulting in a rollover.
+    begin
+      tb_test_case = "Providing Key Input Rollover";
+      tb_test_num  = 3;
+
+      repeat (3) @(negedge tb_clk);
+      for (int iteration = 0; iteration < 32; iteration++) begin
+        input_byte_task(iteration, 1);
+      end
+
+      reset_dut();
     end
   endtask
 
@@ -108,17 +171,14 @@ module top_tb ();
     // ************************************************************************
     // Test Case 2: Providing Key Input
     // ************************************************************************
-    tb_test_case = "Providing Key Input";
-    tb_test_num  = 2;
 
-    @(negedge tb_clk);
-    input_byte = 8'hA;
-    is_key = 1;
-    input_request = 1;
-    repeat (10) @(negedge tb_clk);
-    output_acknowledge = 1;
+    test_provide_key_input();
 
-    reset_dut();
+    // ************************************************************************
+    // Test Case 3: Providing Key Input with Rollover
+    // ************************************************************************
+
+    test_provide_key_input_rollover();
 
     $display("\nTest cases passed: %1d/%1d\n", tb_passed, tb_test_num);
     $finish;
