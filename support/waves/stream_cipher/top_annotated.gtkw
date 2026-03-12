@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
-[*] Sat Mar  7 03:40:06 2026
+[*] Sat Mar  7 04:30:29 2026
 [*]
 [dumpfile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/top.vcd"
-[dumpfile_mtime] "Sat Mar  7 03:37:38 2026"
-[dumpfile_size] 8333
+[dumpfile_mtime] "Sat Mar  7 04:26:55 2026"
+[dumpfile_size] 8215
 [savefile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/top_annotated.gtkw"
 [timestart] 0
 [size] 1900 994
 [pos] -959 -1
-*-15.065701 85000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-15.306708 205000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top_tb.
 [treeopen] top_tb.DUT.
 [sst_width] 332
@@ -18,13 +18,15 @@
 [sst_vpaned_height] 293
 @200
 -Misc Pins
-@29
+@28
 top_tb.tb_clk
 @420
 top_tb.tb_test_num
 @200
 -
 -Chip Input (Testbench)
+@28
+top_tb.output_acknowledge
 @c00022
 top_tb.input_byte[7:0]
 @28
@@ -52,8 +54,13 @@ top_tb.input_acknowledged
 @200
 -
 -Interface FSM
-@28
+@c00028
 top_tb.DUT.interface_fsm_inst.current_interface_state[1:0]
+@28
+(0)top_tb.DUT.interface_fsm_inst.current_interface_state[1:0]
+(1)top_tb.DUT.interface_fsm_inst.current_interface_state[1:0]
+@1401200
+-group_end
 @200
 -
 -Reader
@@ -92,8 +99,139 @@ top_tb.DUT.data_router_inst.byte_pulse
 -Key Storage
 @28
 top_tb.DUT.key_storage_inst.received_key_byte_pulse_out
-@22
+@c00023
 top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+@28
+(0)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(1)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(2)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(3)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(4)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(5)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(6)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(7)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(8)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(9)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(10)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(11)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(12)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(13)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(14)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(15)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(16)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(17)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(18)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(19)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(20)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(21)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(22)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(23)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(24)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(25)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(26)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(27)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(28)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(29)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(30)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(31)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(32)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(33)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(34)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(35)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(36)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(37)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(38)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(39)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(40)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(41)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(42)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(43)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(44)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(45)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(46)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(47)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(48)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(49)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(50)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(51)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(52)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(53)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(54)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(55)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(56)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(57)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(58)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(59)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(60)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(61)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(62)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(63)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(64)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(65)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(66)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(67)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(68)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(69)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(70)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(71)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(72)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(73)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(74)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(75)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(76)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(77)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(78)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(79)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(80)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(81)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(82)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(83)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(84)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(85)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(86)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(87)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(88)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(89)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(90)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(91)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(92)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(93)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(94)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(95)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(96)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(97)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(98)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(99)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(100)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(101)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(102)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(103)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(104)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(105)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(106)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(107)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(108)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(109)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(110)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(111)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(112)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(113)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(114)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(115)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(116)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(117)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(118)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(119)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(120)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(121)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(122)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(123)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(124)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(125)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(126)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+(127)top_tb.DUT.key_storage_inst.key_memory_out[127:0]
+@1401201
+-group_end
 @200
 -
 -Output Holder
