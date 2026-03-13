@@ -55,7 +55,10 @@ module top_tb ();
     end
   endtask
 
-  task static input_byte_task(input logic [7:0] t_input_byte, input logic t_is_key);
+  task static input_byte_task(input logic [7:0] t_input_byte, input logic t_is_key,
+                              input logic t_reset_hash);
+    reset_hash = t_reset_hash;
+
     begin
       if (input_acknowledged || input_request) begin
         wait_for_chip_output();
@@ -74,6 +77,7 @@ module top_tb ();
       wait (input_acknowledged == 1);
 
       input_request = 0;
+      reset_hash = 0;
     end
   endtask
 
@@ -105,7 +109,7 @@ module top_tb ();
 
       repeat (3) @(negedge tb_clk);
       for (int iteration = 0; iteration < 32; iteration++) begin
-        input_byte_task(iteration, 1);
+        input_byte_task(iteration, 1, 0);
       end
 
       reset_dut();
