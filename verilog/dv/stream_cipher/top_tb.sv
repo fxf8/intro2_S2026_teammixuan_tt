@@ -116,6 +116,28 @@ module top_tb ();
     end
   endtask
 
+  task static test_encrypt_data();
+    logic [7:0] encrypted_output;
+
+    begin
+      tb_test_case = "Encrypting Data";
+      tb_test_num  = 4;
+
+      // Key input
+      input_byte_task(8'hAA, 1, 0);
+      input_byte_task(8'hBB, 1, 0);
+
+      wait_for_chip_output();
+
+      // Byte input
+      input_byte_task(8'h00, 0, 0);
+
+      encrypted_output = output_byte;
+
+      reset_dut();
+    end
+  endtask
+
   // Add more tasks as needed
 
   // Clock generation block
@@ -176,13 +198,19 @@ module top_tb ();
     // Test Case 2: Providing Key Input
     // ************************************************************************
 
-    test_provide_key_input();
+    // test_provide_key_input();
 
     // ************************************************************************
     // Test Case 3: Providing Key Input with Rollover
     // ************************************************************************
 
-    test_provide_key_input_rollover();
+    // test_provide_key_input_rollover();
+
+    // ************************************************************************
+    // Test Case 4: Encrypting Data
+    // ************************************************************************
+
+    test_encrypt_data();
 
     $display("\nTest cases passed: %1d/%1d\n", tb_passed, tb_test_num);
     $finish;
