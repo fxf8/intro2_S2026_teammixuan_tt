@@ -118,10 +118,13 @@ module top_tb ();
 
   task static test_encrypt_data();
     logic [7:0] encrypted_output;
+    logic is_awaiting_encrypted_output;
 
     begin
       tb_test_case = "Encrypting Data";
-      tb_test_num  = 4;
+      tb_test_num = 4;
+
+      is_awaiting_encrypted_output = 'X;
 
       // Key input
       input_byte_task(8'hAA, 1, 0);
@@ -130,7 +133,11 @@ module top_tb ();
       wait_for_chip_output();
 
       // Byte input
-      input_byte_task(8'h00, 0, 0);
+      input_byte_task(8'hCC, 0, 0);
+
+      is_awaiting_encrypted_output = 1;
+
+      repeat (10) @(negedge tb_clk);
 
       encrypted_output = output_byte;
 
