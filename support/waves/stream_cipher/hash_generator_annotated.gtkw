@@ -1,0 +1,52 @@
+[*]
+[*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
+[*] Mon Mar 16 18:18:51 2026
+[*]
+[dumpfile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/hash_generator.vcd"
+[dumpfile_mtime] "Mon Mar 16 18:13:48 2026"
+[dumpfile_size] 8750
+[savefile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/hash_generator_annotated.gtkw"
+[timestart] 0
+[size] 1900 994
+[pos] -959 -1
+*-15.638792 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] hash_generator_tb.
+[sst_width] 407
+[signals_width] 310
+[sst_expanded] 1
+[sst_vpaned_height] 293
+@200
+-Misc
+@28
+hash_generator_tb.tb_clk
+hash_generator_tb.tb_nrst
+@420
+hash_generator_tb.tb_test_num
+@200
+-
+-Inputs
+@28
+hash_generator_tb.reset_hash
+hash_generator_tb.request_hash_byte_pulse
+@22
+hash_generator_tb.key_memory[127:0]
+@200
+-
+-Outputs
+@28
+hash_generator_tb.generator_current_state_out[2:0]
+@22
+hash_generator_tb.hash_byte_out[7:0]
+@28
+hash_generator_tb.hash_byte_pulse_out
+@200
+-
+-Internal
+-Server
+@28
+hash_generator_tb.DUT.generator_current_state[2:0]
+@200
+-
+-Computer
+[pattern_trace] 1
+[pattern_trace] 0
