@@ -54,6 +54,9 @@ module hash_generator_tb ();
     logic input_request_pulsed;
 
     begin
+      tb_test_case = "Request Hashed Byte";
+      tb_test_num = 2;
+
       input_request_pulsed = 0;
       key_memory = 'hABC;
 
@@ -112,9 +115,10 @@ module hash_generator_tb ();
     reset_dut();
 
     // ************************************************************************
-    // Test Case 2: Continuous counting
-    // ************************************************************************    
-    tb_test_case = "Your Next Test Case";
+    // Test Case 2: Request Hashed Byte
+    // ************************************************************************
+
+    test_request_hashed_byte();
 
     $display("\nTest cases passed: %1d/%1d\n", tb_passed, tb_test_num);
     $finish;
