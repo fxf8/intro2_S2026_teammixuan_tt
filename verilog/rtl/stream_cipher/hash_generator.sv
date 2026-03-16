@@ -25,10 +25,10 @@ module hash_generator #(
     output types_pkg::hash_generator_state_t generator_current_state_out
 );
   typedef types_pkg::hash_generator_state_t hash_generator_state_t;
-  typedef enum {
-    IDLE,  // The starting initial state when no hash is computed
-    READY,  // When the hash is computed and the marker is within the hashed bounds
-    CALCULATING  // When the hash is being computed
+  typedef enum logic [1:0] {
+    IDLE = 2'b00,  // The starting initial state when no hash is computed
+    READY = 2'b01,  // When the hash is computed and the marker is within the hashed bounds
+    CALCULATING = 2'b10  // When the hash is being computed
   } computed_hash_state_t;
 
   // This is the amount of bytes in the hash
@@ -81,8 +81,8 @@ module hash_generator #(
 
   localparam int IterationCountWidth = $clog2(HASH_ITERATIONS);
 
-  logic [IterationCountWidth-1:0] iteration_count;
-  logic [IterationCountWidth-1:0] next_iteration_count;
+  logic [IterationCountWidth+1:0] iteration_count;
+  logic [IterationCountWidth+1:0] next_iteration_count;
 
   // Total amount of hashes computed. This is assigned to the initial v0 when
   // computing next_hash
@@ -198,7 +198,8 @@ module hash_generator #(
     next_served_hash = served_hash;
     next_hash_number = hash_number;
 
-    if (generator_current_state == types_pkg::H_EXHAUSTED && computed_hash_state == READY) begin
+    if ((generator_current_state == types_pkg::H_FIRST_QUERRY ||
+        generator_current_state == types_pkg::H_EXHAUSTED) && computed_hash_state == READY) begin
       next_served_hash = computed_hash;
       next_hash_number = hash_number + 1;
     end
