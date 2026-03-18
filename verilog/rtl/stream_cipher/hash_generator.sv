@@ -5,7 +5,7 @@
 // v[1] = 32 bit counted value
 
 module hash_generator #(
-    parameter int HASH_ITERATIONS = 8
+    parameter int HASH_ITERATIONS = 128
 ) (
     input logic clk,
     nrst,  //clock and negative-edge reset
@@ -46,11 +46,13 @@ module hash_generator #(
   logic next_hash_byte_pulse;
   assign hash_byte_pulse_out = hash_byte_pulse;
 
-  logic [ 2:0] hash_byte_out_index;  // This is used to index for providing the correct output.
+  localparam int HashByteOutIndexWidth = $clog2(HashByteCount);
+  logic [HashByteOutIndexWidth:0] hash_byte_out_index;
+  // This is used to index for providing the correct output.
   // Hash has 64 bits (8 bytes). 8 possible states requires 3 bits. Therefore,
   // `hash_byte_index` needs 3 bits. If hash_byte_index is 3'b111, then the
   // current state is EXHAUSTED and the hash must be recomputed.
-  logic [ 2:0] next_hash_byte_out_index;
+  logic [2:0] next_hash_byte_out_index;
 
   // This is the hash that is outputted
   logic [63:0] served_hash;
@@ -138,7 +140,7 @@ module hash_generator #(
       end
 
       types_pkg::H_PULSE_OUT: begin
-        if (hash_byte_out_index < HashByteCount) begin
+        if (hash_byte_out_index < (HashByteCount - 1)) begin
           generator_next_state = types_pkg::H_READY;
 
         end else begin

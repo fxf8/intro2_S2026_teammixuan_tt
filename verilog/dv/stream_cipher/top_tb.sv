@@ -116,7 +116,7 @@ module top_tb ();
     end
   endtask
 
-  task static test_encrypt_data();
+  task static test_encrypt_single_byte();
     logic [7:0] encrypted_output;
     logic is_awaiting_encrypted_output;
 
@@ -137,15 +137,50 @@ module top_tb ();
 
       is_awaiting_encrypted_output = 1;
 
-      repeat (10) @(negedge tb_clk);
+      // repeat (32) @(negedge tb_clk);
+      wait_for_chip_output();
 
       encrypted_output = output_byte;
+      is_awaiting_encrypted_output = 0;
+
+      repeat (3) @(negedge tb_clk);
 
       reset_dut();
     end
   endtask
 
-  // Add more tasks as needed
+  task static test_encrypt_large_data();
+    // Note: This tests hash generator and recomputation cycles
+    localparam int EncryptedDataSize = 128;
+
+    logic [7:0] data[EncryptedDataSize];
+    logic [7:0] encrypted_data[EncryptedDataSize];
+    logic data_is_encrypted;
+
+    begin
+      tb_test_case = "Encrypting Long Stream";
+      tb_test_num  = 5;
+
+      // Initialize data
+      for (int index = 0; index < EncryptedDataSize; index++) begin
+        data[index] = index;
+      end
+
+      data_is_encrypted = 0;
+
+      // Key input
+      input_byte_task(8'hAA, 1, 0);
+      input_byte_task(8'hBB, 1, 0);
+
+      for (int index = 0; index < EncryptedDataSize; index++) begin
+        data[index] = index;
+
+        input_byte_task(data[index], 0, 0);
+      end
+
+      data_is_encrypted = 1;
+    end
+  endtask
 
   // Clock generation block
   always begin
@@ -214,10 +249,16 @@ module top_tb ();
     // test_provide_key_input_rollover();
 
     // ************************************************************************
-    // Test Case 4: Encrypting Data
+    // Test Case 4: Encrypting Data (Single Byte);
     // ************************************************************************
 
-    test_encrypt_data();
+    // test_encrypt_single_byte();
+
+    // ************************************************************************
+    // Test Case 5: Encrypting Long Stream
+    // ************************************************************************
+
+    test_encrypt_large_data();
 
     $display("\nTest cases passed: %1d/%1d\n", tb_passed, tb_test_num);
     $finish;
