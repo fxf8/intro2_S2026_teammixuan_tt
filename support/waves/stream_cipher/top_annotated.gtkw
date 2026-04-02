@@ -1,24 +1,24 @@
 [*]
 [*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
-[*] Wed Mar 18 00:06:58 2026
+[*] Fri Mar 27 23:27:11 2026
 [*]
 [dumpfile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/top.vcd"
-[dumpfile_mtime] "Wed Mar 18 00:04:57 2026"
-[dumpfile_size] 795809
+[dumpfile_mtime] "Fri Mar 27 19:35:12 2026"
+[dumpfile_size] 23260365
 [savefile] "/home/fuex/Purdue/SoCET_2/intro2_S2026_teammixuan_tt/support/waves/stream_cipher/top_annotated.gtkw"
 [timestart] 0
-[size] 1910 1004
-[pos] -1 -1
-*-21.114885 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1900 994
+[pos] -959 -1
+*-21.114885 2255000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top_tb.
 [treeopen] top_tb.DUT.
 [sst_width] 332
 [signals_width] 412
 [sst_expanded] 1
-[sst_vpaned_height] 293
+[sst_vpaned_height] 290
 @200
 -Misc Pins
-@28
+@29
 top_tb.tb_clk
 @420
 top_tb.tb_test_num
@@ -268,9 +268,7 @@ top_tb.DUT.hash_generator_inst.generator_current_state_out[2:0]
 (2)top_tb.DUT.hash_generator_inst.generator_current_state_out[2:0]
 @1401200
 -group_end
-@28
-top_tb.DUT.hash_generator_inst.computed_hash_state[1:0]
-@23
+@22
 top_tb.DUT.hash_generator_inst.served_hash[63:0]
 [pattern_trace] 1
 [pattern_trace] 0
