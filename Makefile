@@ -253,7 +253,7 @@ sim_%_src:
 syn_%: check_env
 	@echo -e "Synthesizing design...\n"
 	@mkdir -p $(MAP)
-	@if [ "$*" = "stream_cipher" ]; then \
+	@if [ "$(PROJECT)" = "stream_cipher" ]; then \
 		echo -e "Performing Specialized Synthesis for project \`stream_cipher\`\n"; \
 		$(YOSYS) -d -p "read_verilog -sv -noblackbox $(SRC)/types_pkg.sv $(SRC)/*; \
                         synth -top $*; \
