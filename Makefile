@@ -296,7 +296,7 @@ cells : $(ICE) $(SRC) $(FPGA_TOP_DIR) $(PINMAP)
 	@if [ "$(PROJECT)" = "stream_cipher" ]; then \
 		echo -e "Performing Specialized Synthesis for project \`stream_cipher\`\n"; \
 		$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/types_pkg.sv $(SRC)/* $(FPGA_TOP_DIR); synth -top fpga_top; show -format svg -viewer gimp"; \
-	else
+	else \
 		$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/* $(FPGA_TOP_DIR); synth -top fpga_top; show -format svg -viewer gimp"; \
 	fi
 
@@ -315,12 +315,12 @@ vlint_%:
 # Check code and synthesize design into a JSON netlist
 $(BUILD)/$(FPGA_TOP).json : $(ICE) $(SRC)/* $(FPGA_TOP_DIR) $(PINMAP)
 	# lint with Verilator
-	verilator --lint-only --top-module fpga_top -Werror-latch -y $(SRC)/types_pkg.sv $(SRC) $(FPGA_TOP_DIR)
+	verilator --lint-only --top-module fpga_top -Werror-latch $(SRC)/types_pkg.sv -y $(SRC) $(FPGA_TOP_DIR)
 	# if build folder doesn't exist, create it
 	mkdir -p $(BUILD)
 	# synthesize using Yosys
 # 	$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/*; synth_ice40 -top ice40hx8k -json $(BUILD)/$(FPGA_TOP).json"
-	$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/* $(FPGA_TOP_DIR); \
+	$(YOSYS) -p "read_verilog -sv -noblackbox $(ICE) $(UART) $(SRC)/types_pkg.sv $(SRC)/* $(FPGA_TOP_DIR); \
     hierarchy -top ice40hx8k; \
     synth_ice40 -top ice40hx8k; \
     opt_clean -purge; clean -purge; \
