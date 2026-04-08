@@ -52,7 +52,7 @@ module hash_generator #(
   // Hash has 64 bits (8 bytes). 8 possible states requires 3 bits. Therefore,
   // `hash_byte_index` needs 3 bits. If hash_byte_index is 3'b111, then the
   // current state is EXHAUSTED and the hash must be recomputed.
-  logic [2:0] next_hash_byte_out_index;
+  logic [HashByteOutIndexWidth:0] next_hash_byte_out_index;
 
   // This is the hash that is outputted
   logic [63:0] served_hash;
@@ -96,7 +96,7 @@ module hash_generator #(
   // State setter for the hash generator
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      generator_current_state <= '0;  // hash_generator_state_t::H_GROUND;
+      generator_current_state <= types_pkg::H_GROUND;  // hash_generator_state_t::H_GROUND;
       hash_byte_pulse <= 0;
       hash_byte_out_index <= '0;
       served_hash <= '0;
@@ -217,7 +217,7 @@ module hash_generator #(
   // State transition setter for the next hash
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      computed_hash_state <= '0;
+      computed_hash_state <= IDLE;
       v0 <= '0;
       v1 <= '0;
       sum <= '0;

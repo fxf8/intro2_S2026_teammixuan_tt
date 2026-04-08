@@ -21,7 +21,7 @@ module interface_fsm (
 
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
-      current_interface_state <= '0;
+      current_interface_state <= types_pkg::I_IDLE;
     end else begin
       current_interface_state <= next_interface_state;
     end

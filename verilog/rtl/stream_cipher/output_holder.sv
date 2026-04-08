@@ -35,7 +35,7 @@ module output_holder (
   always_ff @(posedge clk or negedge nrst) begin
     if (!nrst) begin
       data_buffer <= '0;
-      output_holder_state <= '0;
+      output_holder_state <= types_pkg::O_EMPTY;
 
     end else begin
       if (data_in_pulse) begin
