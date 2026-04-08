@@ -315,7 +315,7 @@ vlint_%:
 # Check code and synthesize design into a JSON netlist
 $(BUILD)/$(FPGA_TOP).json : $(ICE) $(SRC)/* $(FPGA_TOP_DIR) $(PINMAP)
 	# lint with Verilator
-	verilator --lint-only --top-module fpga_top -Werror-latch -y $(SRC) $(FPGA_TOP_DIR)
+	verilator --lint-only --top-module fpga_top -Werror-latch -y $(SRC)/types_pkg.sv $(SRC) $(FPGA_TOP_DIR)
 	# if build folder doesn't exist, create it
 	mkdir -p $(BUILD)
 	# synthesize using Yosys
