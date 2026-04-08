@@ -22,7 +22,8 @@ module key_storage #(
 
   // Used to set values to the key memory. This is the *byte* number and not
   // the *bit* number
-  logic [IndexWidthBytes - 1:0] key_byte_index;  // Indexes the byte in the key memory
+  typedef logic [IndexWidthBytes - 1:0] key_byte_index_t;
+  key_byte_index_t key_byte_index;  // Indexes the byte in the key memory
   logic received_key_byte_pulse;
   assign received_key_byte_pulse_out = received_key_byte_pulse;
 
@@ -41,7 +42,7 @@ module key_storage #(
 
         key_memory[(key_byte_index*8)+:8] <= key_byte;
 
-        if (key_byte_index == (KEY_WIDTH_BYTES - 1)) begin
+        if (key_byte_index == key_byte_index_t'(KEY_WIDTH_BYTES - 1)) begin
           key_byte_index <= '0;
 
         end else begin

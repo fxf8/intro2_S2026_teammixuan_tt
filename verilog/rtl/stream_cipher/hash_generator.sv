@@ -47,12 +47,13 @@ module hash_generator #(
   assign hash_byte_pulse_out = hash_byte_pulse;
 
   localparam int HashByteOutIndexWidth = $clog2(HashByteCount);
-  logic [HashByteOutIndexWidth:0] hash_byte_out_index;
+  typedef logic [HashByteOutIndexWidth:0] hash_byte_index_t;
+  hash_byte_index_t hash_byte_out_index;
   // This is used to index for providing the correct output.
   // Hash has 64 bits (8 bytes). 8 possible states requires 3 bits. Therefore,
   // `hash_byte_index` needs 3 bits. If hash_byte_index is 3'b111, then the
   // current state is EXHAUSTED and the hash must be recomputed.
-  logic [HashByteOutIndexWidth:0] next_hash_byte_out_index;
+  hash_byte_index_t next_hash_byte_out_index;
 
   // This is the hash that is outputted
   logic [63:0] served_hash;
@@ -83,8 +84,10 @@ module hash_generator #(
 
   localparam int IterationCountWidth = $clog2(HASH_ITERATIONS);
 
-  logic [IterationCountWidth+1:0] iteration_count;
-  logic [IterationCountWidth+1:0] next_iteration_count;
+  typedef logic [IterationCountWidth+1:0] iteration_count_t;
+
+  iteration_count_t iteration_count;
+  iteration_count_t next_iteration_count;
 
   // Total amount of hashes computed. This is assigned to the initial v0 when
   // computing next_hash
@@ -140,7 +143,7 @@ module hash_generator #(
       end
 
       types_pkg::H_PULSE_OUT: begin
-        if (hash_byte_out_index < (HashByteCount - 1)) begin
+        if (hash_byte_out_index < hash_byte_index_t'(HashByteCount - 1)) begin
           generator_next_state = types_pkg::H_READY;
 
         end else begin
@@ -247,7 +250,7 @@ module hash_generator #(
       end
 
       CALCULATING: begin
-        if (iteration_count >= HASH_ITERATIONS) begin
+        if (iteration_count >= iteration_count_t'(HASH_ITERATIONS)) begin
           next_computed_hash_state = READY;
         end
       end
@@ -299,7 +302,7 @@ module hash_generator #(
         end
       end
 
-      next_v0 = v0 + ((((v1 << 4) ^ (v1 >> 5)) + v1) ^ (sum + key_memory[(sum&2'b11)*32+:32]));
+      next_v0 = v0 + ((((v1 << 4) ^ (v1 >> 5)) + v1) ^ (sum + key_memory[(sum&32'h3)*32+:32]));
 
       // Step 2: Update sum (XTEA updates sum between v0 and v1)
       next_sum = sum + XTEADelta;
@@ -307,7 +310,7 @@ module hash_generator #(
       // Step 3: Update v1 using the NEW v0 and NEW sum
       next_v1 = v1 + (
           (((next_v0 << 4) ^ (next_v0 >> 5)) + next_v0) ^
-          (next_sum + key_memory[((next_sum >> 11) & 2'b11) * 32+:32])
+          (next_sum + key_memory[((next_sum >> 11) & 32'h3) * 32+:32])
         );
     end
 
@@ -329,7 +332,7 @@ module hash_generator #(
 
         // Note: this is the complement of the condition to transition from
         // CALCULATING to READY
-        if (iteration_count < HASH_ITERATIONS) begin
+        if (iteration_count < iteration_count_t'(HASH_ITERATIONS)) begin
           next_iteration_count = iteration_count + 1;
 
         end else begin

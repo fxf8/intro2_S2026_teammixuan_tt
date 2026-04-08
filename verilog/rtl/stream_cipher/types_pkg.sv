@@ -1,3 +1,6 @@
+`ifndef TYPES_PKG
+`define TYPES_PKG
+
 package types_pkg;
   typedef enum logic [1:0] {
     I_IDLE = 2'b00,
@@ -31,3 +34,5 @@ package types_pkg;
     O_READY = 1
   } output_holder_state_t;
 endpackage
+
+`endif
