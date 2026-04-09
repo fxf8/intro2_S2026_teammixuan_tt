@@ -2,9 +2,17 @@
     "//": "Basics",
     "DESIGN_NAME": "stream_cipher",
     "VERILOG_FILES": [
+        "dir::../../verilog/rtl/stream_cipher/types_pkg.sv",
+        "dir::../../verilog/rtl/stream_cipher/data_router.sv",
+        "dir::../../verilog/rtl/stream_cipher/encryption_block.sv",
+        "dir::../../verilog/rtl/stream_cipher/hash_generator.sv",
+        "dir::../../verilog/rtl/stream_cipher/interface_fsm.sv",
+        "dir::../../verilog/rtl/stream_cipher/key_storage.sv",
+        "dir::../../verilog/rtl/stream_cipher/output_holder.sv",
+        "dir::../../verilog/rtl/stream_cipher/output_mux.sv",
+        "dir::../../verilog/rtl/stream_cipher/reader.sv",
         "dir::../../verilog/rtl/stream_cipher/project.v",
-        "dir::../../verilog/rtl/stream_cipher/top.sv",
-        "dir::../../verilog/rtl/stream_cipher/src1.sv"
+        "dir::../../verilog/rtl/stream_cipher/top.sv"
     ],
     "CLOCK_PERIOD": 25,
     "CLOCK_PORT": "clk",
@@ -30,7 +38,8 @@
 
     "//": "physical size",
     "FP_SIZING": "absolute",
-    "DIE_AREA": "0 0 160 100",
+    "DIE_AREA": "0 0 600 600",
+    "_DIE_AREA": "0 0 160 100",
 
     "//": "others",
     "PL_TARGET_DENSITY_PCT": 60,
