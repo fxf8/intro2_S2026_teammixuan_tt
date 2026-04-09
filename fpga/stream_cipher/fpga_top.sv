@@ -51,57 +51,54 @@ module fpga_top (
 
 */
 
+  // set_io --warn-no-port ss0[7] B1 # DP
+  assign ss0[7] = 1'b1;
+
   // Inputs --------
   logic [7:0] input_byte;
 
   // Most significant bit to least significant bit
   assign input_byte = {
-    left[7],  // C16 -> input_byte[7]
-    ss7[4],  // D16 -> input_byte[6]
-    ss7[6],  // E16 -> input_byte[5]
-    ss7[0],  // F16 -> input_byte[4]
-    ss7[2],  // G16 -> input_byte[3]
-    left[5],  // H16 -> input_byte[2]
-    ss6[4],  // J15 -> input_byte[1]
-    ss6[6]  // G14 -> input_byte[0]
+    pb[5],  // set_io --warn-no-port pb[5] A2 -> input_byte[7]
+    pb[6],  // set_io --warn-no-port pb[6] B4 -> input_byte[6]
+    pb[7],  // set_io --warn-no-port pb[7] B5 -> input_byte[5]
+    pb[8],  // set_io --warn-no-port pb[8] A5 -> input_byte[4]
+    pb[9],  // set_io --warn-no-port pb[9] B6 -> input_byte[3]
+    pb[11],  // set_io --warn-no-port pb[11] A6 -> input_byte[2]
+    pb[13],  // set_io --warn-no-port pb[13] B7 -> input_byte[1]
+    pb[15]  // set_io --warn-no-port pb[15] B8 -> input_byte[0]
   };
 
   logic is_key;
-
-  assign is_key = ss7[3];  // B16 -> is_key
+  assign is_key = pb[4];  // set_io --warn-no-port pb[4] A1
 
   logic reset_hash;
+  assign reset_hash = pb[1];  // set_io --warn-no-port pb[1] B3
 
-  assign reset_hash = ss7[5];  // D14 -> reset_hash
+  logic input_request;
+  assign input_request = pb[0];  // set_io --warn-no-port pb[0] C3
 
-  logic input_request;  // D15
-  // set_io --warn-no-port left[6] D15
-  assign input_request = left[6];
-
-  logic output_acknowledge;  // E14
-  // set_io --warn-no-port ss7[1] E14 # B
-  assign output_acknowledge = ss7[1];
+  logic output_acknowledge;
+  assign output_acknowledge = pb[2];  // set_io --warn-no-port pb[2] C4
 
   // Outputs --------
 
   logic [7:0] output_byte;
 
-  assign pb[5]  = output_byte[7];  // A2 (set_io --warn-no-port pb[5] A2)
-  assign pb[6]  = output_byte[6];  // B4 (set_io --warn-no-port pb[6] B4)
-  assign pb[7]  = output_byte[5];  // B5 (set_io --warn-no-port pb[7] B5)
-  assign pb[8]  = output_byte[4];  // A5 (set_io --warn-no-port pb[8] A5)
-  assign pb[9]  = output_byte[3];  // B6 (set_io --warn-no-port pb[9] B6)
-  assign pb[11] = output_byte[2];  // A6 (set_io --warn-no-port pb[11] A6)
-  assign pb[13] = output_byte[1];  // B7 (set_io --warn-no-port pb[13] B7)
-  assign pb[15] = output_byte[0];  // B8 (set_io --warn-no-port pb[15] B8)
+  assign left[7] = output_byte[7];  // set_io --warn-no-port left[7] C16
+  assign ss7[4]  = output_byte[6];  // set_io --warn-no-port ss7[4] D16
+  assign ss7[6]  = output_byte[5];  // set_io --warn-no-port ss7[6] E16
+  assign ss7[0]  = output_byte[4];  // set_io --warn-no-port ss7[0] F16
+  assign ss7[2]  = output_byte[3];  // set_io --warn-no-port ss7[2] G16
+  assign left[5] = output_byte[2];  // set_io --warn-no-port left[5] H16
+  assign ss6[4]  = output_byte[1];  // set_io --warn-no-port ss6[4] J15
+  assign ss6[6]  = output_byte[0];  // set_io --warn-no-port ss6[6] G14
 
-  logic input_acknowledged;  // A1
-  // set_io --warn-no-port pb[4] A1
-  assign pb[4] = input_acknowledged;
+  logic input_acknowledged;  // set_io --warn-no-port ss7[3] B16
+  assign ss7[3] = input_acknowledged;
 
-  logic output_byte_is_ready;  // B3
-  // set_io --warn-no-port pb[1] B3
-  assign pb[1] = output_byte_is_ready;
+  logic output_byte_is_ready;  // set_io --warn-no-port ss7[5] D14
+  assign ss7[5] = output_byte_is_ready;
 
 
   // Your code goes here...
