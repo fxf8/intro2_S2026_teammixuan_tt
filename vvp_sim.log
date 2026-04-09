@@ -1,5 +1,6 @@
-VCD info: dumpfile support/waves/stoplight_example/top.vcd opened for output.
-VCD warning: $dumpvars: Unsupported argument type (vpiPackage)
+VCD info: dumpfile support/waves/stream_cipher/top.vcd opened for output.
+VCD warning: $dumpvars: Package ($unit) is not dumpable with VCD.
 
-Test cases passed: x/x
+Test cases passed: x/5
 
+verilog/dv/stream_cipher/top_tb.sv:264: $finish called at 21876000 (1ps)
