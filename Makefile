@@ -1,11 +1,11 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# SoCET Intro II Makefile - Alex Weyer, Miguel Isrrael Teran  #
+# SoCET Intro II Makefile - Alex Weyer, Miguel Isrrael Teran, (Modified by Rajin Braynard)  #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Project Directory
 export PROJECT_ROOT := $(shell pwd)
 
-export OPENLANE2_ROOT ?= $(HOME)/openlane2
+export OPENLANE2_ROOT ?= $(HOME)/inst/openlane/openlane2
 export VOLARE_ROOT   ?= $(HOME)/.volare/volare
 export PDK_VERSION   ?= 0fe599b2afb6708d281543108caf8310912f54af
 export PDK_ROOT      ?= $(VOLARE_ROOT)/sky130/versions/$(PDK_VERSION)
