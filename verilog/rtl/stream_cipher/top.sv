@@ -5,8 +5,14 @@ module top (
 
     // General Data Pins
     input logic [7:0] input_byte,
-    input logic is_key,
-    input logic reset_hash,
+    input logic [3:0] configure,
+    /* Configuration Signals (msb -> lsb):
+    * 0000: Inputting Data
+    * 0001: Inputting Key
+    * 0010: Inputting Nonce Data
+    * 0011: Reset Hash Generator (keep key)
+    * 0100: Set Hash Iteration Count (count provided in input_byte)
+    */
 
     // 4-Phase-Handshake Interfacing pins in order of change
     input  logic input_request,
