@@ -5,7 +5,7 @@
 // v[1] = 32 bit counted value
 
 module hash_generator #(
-    parameter int HASH_ITERATIONS = 128
+    parameter int HASH_ITERATIONS = 32
 ) (
     input logic clk,
     nrst,  //clock and negative-edge reset
