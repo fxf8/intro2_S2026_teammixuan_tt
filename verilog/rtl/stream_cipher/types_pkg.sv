@@ -2,25 +2,25 @@
 `define TYPES_PKG
 
 package types_pkg;
-    typedef enum logic [4:0] {
-    CMD_ENCRYPT_MODE  = 5'b00000,
-    CMD_STD_READ      = 5'b00001,
-    CMD_STD_WRITE     = 5'b00010,
-    CMD_ITER_READ     = 5'b00011,
-    CMD_ITER_WRITE    = 5'b00100,
-    CMD_NONCE_READ    = 5'b00101,
-    CMD_NONCE_WRITE   = 5'b00110,
-    CMD_NONCE_IDX_RD  = 5'b00111,
-    CMD_NONCE_IDX_WR  = 5'b01000,
-    CMD_KEY_READ      = 5'b01001,
-    CMD_KEY_WRITE     = 5'b01010,
-    CMD_KEY_IDX_RD    = 5'b01011,
-    CMD_KEY_IDX_WR    = 5'b01100,
-    CMD_START_HASH    = 5'b01101,
-    CMD_RESET_HASH    = 5'b01110,
-    CMD_CTR_READ      = 5'b01111,
-    CMD_CTR_WRITE     = 5'b10000,
-    CMD_STATUS_READ   = 5'b10001
+  typedef enum logic [4:0] {
+    CMD_ENCRYPT_MODE = 5'b00000,
+    CMD_STD_READ     = 5'b00001,
+    CMD_STD_WRITE    = 5'b00010,
+    CMD_ITER_READ    = 5'b00011,
+    CMD_ITER_WRITE   = 5'b00100,
+    CMD_NONCE_READ   = 5'b00101,
+    CMD_NONCE_WRITE  = 5'b00110,
+    CMD_NONCE_IDX_RD = 5'b00111,
+    CMD_NONCE_IDX_WR = 5'b01000,
+    CMD_KEY_READ     = 5'b01001,
+    CMD_KEY_WRITE    = 5'b01010,
+    CMD_KEY_IDX_RD   = 5'b01011,
+    CMD_KEY_IDX_WR   = 5'b01100,
+    CMD_START_HASH   = 5'b01101,
+    CMD_RESET_HASH   = 5'b01110,
+    CMD_CTR_READ     = 5'b01111,
+    CMD_CTR_WRITE    = 5'b10000,
+    CMD_STATUS_READ  = 5'b10001
   } cmd_t;
 
   typedef enum logic [1:0] {
@@ -67,8 +67,8 @@ package types_pkg;
   } output_holder_state_t;
 
   typedef enum logic {
-    S_DJB = 0, // Nonce is 64 bits
-    S_ITEF = 1 // Nonce is 96 bits
+    S_DJB  = 0,  // Nonce is 64 bits
+    S_ITEF = 1   // Nonce is 96 bits
   } chacha_setup_standard_t;
 endpackage
 
