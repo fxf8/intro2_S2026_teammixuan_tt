@@ -2,6 +2,27 @@
 `define TYPES_PKG
 
 package types_pkg;
+    typedef enum logic [4:0] {
+    CMD_ENCRYPT_MODE  = 5'b00000,
+    CMD_STD_READ      = 5'b00001,
+    CMD_STD_WRITE     = 5'b00010,
+    CMD_ITER_READ     = 5'b00011,
+    CMD_ITER_WRITE    = 5'b00100,
+    CMD_NONCE_READ    = 5'b00101,
+    CMD_NONCE_WRITE   = 5'b00110,
+    CMD_NONCE_IDX_RD  = 5'b00111,
+    CMD_NONCE_IDX_WR  = 5'b01000,
+    CMD_KEY_READ      = 5'b01001,
+    CMD_KEY_WRITE     = 5'b01010,
+    CMD_KEY_IDX_RD    = 5'b01011,
+    CMD_KEY_IDX_WR    = 5'b01100,
+    CMD_START_HASH    = 5'b01101,
+    CMD_RESET_HASH    = 5'b01110,
+    CMD_CTR_READ      = 5'b01111,
+    CMD_CTR_WRITE     = 5'b10000,
+    CMD_STATUS_READ   = 5'b10001
+  } cmd_t;
+
   typedef enum logic [1:0] {
     I_IDLE = 2'b00,
     I_PROCESSING = 2'b01,
@@ -29,10 +50,26 @@ package types_pkg;
   // Hashes can only be requested when the hash generator is in either the
   // `GROUND` or `READY` state
 
+  typedef logic [7:0] chacha_byte_t;
+
+  typedef chacha_byte_t [31:0] chacha_key_t;
+  typedef logic [4:0] chacha_key_index_t;
+
+  typedef chacha_byte_t [11:0] chacha_nonce_t;
+  typedef chacha_byte_t [3:0] chacha_nonce_index_t;
+
+  typedef logic [7:0] chacha_iterations_t;
+  typedef enum logic [1:0] {U_INITIAL = 0} hash_unit_state_t;
+
   typedef enum logic {
     O_EMPTY = 0,
     O_READY = 1
   } output_holder_state_t;
+
+  typedef enum logic {
+    S_DJB = 0, // Nonce is 64 bits
+    S_ITEF = 1 // Nonce is 96 bits
+  } chacha_setup_standard_t;
 endpackage
 
 `endif
