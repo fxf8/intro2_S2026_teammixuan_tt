@@ -3,25 +3,46 @@
 
 package types_pkg;
   typedef enum logic [4:0] {
-    CMD_ENCRYPT_MODE = 5'b00000,
-    CMD_STD_READ     = 5'b00001,
-    CMD_STD_WRITE    = 5'b00010,
-    CMD_ITER_READ    = 5'b00011,
-    CMD_ITER_WRITE   = 5'b00100,
-    CMD_NONCE_READ   = 5'b00101,
-    CMD_NONCE_WRITE  = 5'b00110,
-    CMD_NONCE_IDX_RD = 5'b00111,
-    CMD_NONCE_IDX_WR = 5'b01000,
-    CMD_KEY_READ     = 5'b01001,
-    CMD_KEY_WRITE    = 5'b01010,
-    CMD_KEY_IDX_RD   = 5'b01011,
-    CMD_KEY_IDX_WR   = 5'b01100,
-    CMD_START_HASH   = 5'b01101,
-    CMD_RESET_HASH   = 5'b01110,
-    CMD_CTR_READ     = 5'b01111,
-    CMD_CTR_WRITE    = 5'b10000,
-    CMD_STATUS_READ  = 5'b10001
+    CMD_SET_ENCRYPT_MODE = 5'b00000,  // Switch to MODE_ENCRYPT
+
+    CMD_IV_STD_READ  = 5'b00001,
+    CMD_IV_STD_WRITE = 5'b00010,  // Switch to MODE_IV_STANDARD_SETUP
+
+    CMD_N_ITER_READ  = 5'b00011,
+    CMD_N_ITER_WRITE = 5'b00100,  // Switch to MODE_HASH_ITERATIONS_SETUP
+
+    CMD_NONCE_READ      = 5'b00101,
+    CMD_NONCE_WRITE     = 5'b00110,  // Switch to MODE_NONCE_BYTES_INPUT
+    CMD_NONCE_IDX_READ  = 5'b00111,
+    CMD_NONCE_IDX_WRITE = 5'b01000,  // Switch to MODE_NONCE_BYTES_INDEX_SETUP
+
+    CMD_KEY_READ      = 5'b01001,
+    CMD_KEY_WRITE     = 5'b01010,  // Switch to MODE_KEY_BYTES_INPUT
+    CMD_KEY_IDX_READ  = 5'b01011,
+    CMD_KEY_IDX_WRITE = 5'b01100,  // Switch to MODE_KEY_BYTES_INDEX_SETUP
+
+    CMD_BLOCK_CNT_READ      = 5'b01101,
+    CMD_BLOCK_CNT_WRITE     = 5'b01110,  // Switch to MODE_BLOCK_COUNTER_INPUT
+    CMD_BLOCK_CNT_IDX_READ  = 5'b01111,
+    CMD_BLOCK_CNT_IDX_WRITE = 5'b10000,  // Switch to MODE_BLOCK_COUNTER_INDEX_SETUP
+
+    CMD_START_HASH  = 5'b10001,
+    CMD_RESET_HASH  = 5'b10010,
+    CMD_HASH_STATUS = 5'b10011,
+    CMD_STATUS_READ = 5'b10100
   } cmd_t;
+
+  typedef enum logic [3:0] {
+    MODE_ENCRYPT = 4'b0000,
+    MODE_IV_STANDARD_SETUP = 4'b0001,
+    MODE_HASH_ITERATIONS_SETUP = 4'b0010,
+    MODE_NONCE_BYTES_INPUT = 4'b0011,
+    MODE_NONCE_BYTES_INDEX_SETUP = 4'b0100,
+    MODE_KEY_BYTES_INPUT = 4'b0101,
+    MODE_KEY_BYTES_INDEX_SETUP = 4'b0110,
+    MODE_BLOCK_COUNTER_INPUT = 4'b0111,
+    MODE_BLOCK_COUNTER_INDEX_SETUP = 4'b1000
+  } cmd_mode_t;
 
   typedef enum logic [1:0] {
     I_IDLE = 2'b00,
@@ -56,9 +77,13 @@ package types_pkg;
   typedef logic [4:0] chacha_key_index_t;
 
   typedef chacha_byte_t [11:0] chacha_nonce_t;
-  typedef chacha_byte_t [3:0] chacha_nonce_index_t;
+  typedef logic [3:0] chacha_nonce_index_t;
 
   typedef logic [7:0] chacha_iterations_t;
+
+  typedef logic [63:0] chacha_block_counter_t;
+  typedef logic [2:0] chacha_block_counter_index_t;
+
   typedef enum logic [1:0] {U_INITIAL = 0} hash_unit_state_t;
 
   typedef enum logic {
