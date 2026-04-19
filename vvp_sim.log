@@ -1,6 +1,21 @@
-VCD info: dumpfile support/waves/stream_cipher/top.vcd opened for output.
+VCD info: dumpfile support/waves/stream_cipher/memory_block.vcd opened for output.
 VCD warning: $dumpvars: Package ($unit) is not dumpable with VCD.
+VCD warning: $dumpvars: Package (types_pkg) is not dumpable with VCD.
+  [PASS] Power on Reset: Initial address and memory are zero.
+  [PASS] Store Single Byte: Stored byte and address incremented.
+  [PASS] Store Single Byte: Memory content matches expected.
+  [PASS] Store Multiple Bytes (Auto-Increment): Address auto-incremented correctly.
+  [PASS] Store Multiple Bytes (Auto-Increment): Memory content matches expected.
+  DEBUG: After set_address_task(5), tb_address_out = 5
+  DEBUG: After store_byte_task(FF), tb_address_out = 6
+  [PASS] Set Address and Store: Address set and byte stored correctly.
+  [PASS] Set Address and Store: Memory content matches expected.
+  [PASS] Read at Address: Byte at current address matches expected.
+  [PASS] Read at Address: Byte at current address matches expected.
+  [PASS] Memory Rollover: Address rolled over to 0.
+  [PASS] Memory Rollover: Stored byte at rolled over address 0.
+  [PASS] Memory Rollover: Byte at current address matches expected.
 
-Test cases passed: x/5
+Total Test Cases: 6, Total Checks Passed: 12
 
-verilog/dv/stream_cipher/top_tb.sv:264: $finish called at 21876000 (1ps)
+verilog/dv/stream_cipher/memory_block_tb.sv:284: $finish called at 97000 (10ps)
