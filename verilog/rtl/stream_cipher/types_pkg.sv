@@ -14,17 +14,17 @@ package types_pkg;
     CMD_NONCE_READ       = 5'b00101,
     CMD_NONCE_WRITE      = 5'b00110,  // Switch to MODE_NONCE_BYTES_INPUT
     CMD_NONCE_ADDR_READ  = 5'b00111,
-    CMD_NONCE_ADDR_WRITE = 5'b01000,  // Switch to MODE_NONCE_BYTES_INDEX_SETUP
+    CMD_NONCE_ADDR_WRITE = 5'b01000,  // Switch to MODE_NONCE_BYTES_ADDR_SETUP
 
     CMD_KEY_READ       = 5'b01001,
     CMD_KEY_WRITE      = 5'b01010,  // Switch to MODE_KEY_BYTES_INPUT
     CMD_KEY_ADDR_READ  = 5'b01011,
-    CMD_KEY_ADDR_WRITE = 5'b01100,  // Switch to MODE_KEY_BYTES_INDEX_SETUP
+    CMD_KEY_ADDR_WRITE = 5'b01100,  // Switch to MODE_KEY_BYTES_ADDR_SETUP
 
     CMD_BLOCK_CNT_READ       = 5'b01101,
     CMD_BLOCK_CNT_WRITE      = 5'b01110,  // Switch to MODE_BLOCK_COUNTER_INPUT
     CMD_BLOCK_CNT_ADDR_READ  = 5'b01111,
-    CMD_BLOCK_CNT_ADDR_WRITE = 5'b10000,  // Switch to MODE_BLOCK_COUNTER_INDEX_SETUP
+    CMD_BLOCK_CNT_ADDR_WRITE = 5'b10000,  // Switch to MODE_BLOCK_COUNTER_ADDR_SETUP
 
     CMD_HASH_STATE_ADDR_READ  = 5'b10001,
     CMD_HASH_STATE_ADDR_WRITE = 5'b10010,
@@ -32,7 +32,7 @@ package types_pkg;
     CMD_START_HASH  = 5'b10011,
     CMD_RESET_HASH  = 5'b10100,
     CMD_HASH_STATUS = 5'b10101,
-    CMD_STATUS_READ = 5'b10110
+    CMD_MODE_READ = 5'b10110
   } cmd_t;
 
   typedef enum logic [3:0] {
@@ -40,11 +40,12 @@ package types_pkg;
     MODE_IV_STANDARD_SETUP = 4'b0001,
     MODE_HASH_ITERATIONS_SETUP = 4'b0010,
     MODE_NONCE_BYTES_INPUT = 4'b0011,
-    MODE_NONCE_BYTES_INDEX_SETUP = 4'b0100,
+    MODE_NONCE_BYTES_ADDR_SETUP = 4'b0100,
     MODE_KEY_BYTES_INPUT = 4'b0101,
-    MODE_KEY_BYTES_INDEX_SETUP = 4'b0110,
+    MODE_KEY_BYTES_ADDR_SETUP = 4'b0110,
     MODE_BLOCK_COUNTER_INPUT = 4'b0111,
-    MODE_BLOCK_COUNTER_INDEX_SETUP = 4'b1000
+    MODE_BLOCK_COUNTER_ADDR_SETUP = 4'b1000,
+    MODE_HASH_STATE_ADDR_SETUP = 4'b1001
   } cmd_mode_t;
 
   typedef enum logic [1:0] {
@@ -77,17 +78,17 @@ package types_pkg;
   typedef logic [7:0] chacha_byte_t;
 
   typedef chacha_byte_t [31:0] chacha_key_t;
-  typedef logic [4:0] chacha_key_index_t;
+  typedef logic [4:0] chacha_key_addr_t;
 
   typedef chacha_byte_t [11:0] chacha_nonce_t;
-  typedef logic [3:0] chacha_nonce_index_t;
+  typedef logic [3:0] chacha_nonce_addr_t;
 
   typedef logic [7:0] chacha_iterations_t;
 
   typedef logic [63:0] chacha_block_counter_t;
-  typedef logic [2:0] chacha_block_counter_index_t;
+  typedef logic [2:0] chacha_block_counter_addr_t;
 
-  typedef logic [5:0] chacha_hash_state_address_t;
+  typedef logic [5:0] chacha_hash_state_addr_t;
 
   typedef logic [31:0] chacha_word_t;
   typedef chacha_word_t [15:0] chacha_ctx_t;

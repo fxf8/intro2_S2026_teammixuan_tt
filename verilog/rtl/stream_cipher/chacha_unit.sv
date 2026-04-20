@@ -156,8 +156,8 @@ x14 = PLUS(x14, j14);
 x15 = PLUS(x15, j15);
 */
 
-task automatic update_state(input types_pkg::chacha_ctx_t ctx,
-                            inout types_pkg::chacha_word_t [15:0] state);
+task automatic final_addition(input types_pkg::chacha_ctx_t ctx,
+                              inout types_pkg::chacha_word_t [15:0] state);
   begin
     for (integer index = 0; index < 16; index = index + 1) begin
       state[index] = state[index] + ctx[index];
@@ -166,9 +166,7 @@ task automatic update_state(input types_pkg::chacha_ctx_t ctx,
 endtask
 
 
-module chacha_unit #(
-    parameter types_pkg::chacha_iterations_t DEFAULT_CHACHA_ITERATIONS = 20
-) (
+module chacha_unit (
     input logic clk,
     nrst,  //clock and negative-edge reset
     //other signals here
@@ -182,14 +180,25 @@ module chacha_unit #(
     input types_pkg::chacha_setup_standard_t setup_standard_in,
     input types_pkg::chacha_iterations_t iterations_in,
 
-    output types_pkg::hash_unit_state_t state_out,
+    output types_pkg::hash_unit_state_t hash_unit_state_out,
     output types_pkg::chacha_ctx_t chacha_state_out
 );
   typedef types_pkg::chacha_ctx_t chacha_ctx_t;
+  typedef types_pkg::chacha_iterations_t chacha_iterations_t;
+  typedef types_pkg::hash_unit_state_t hash_unit_state_t;
+
+  hash_unit_state_t hash_unit_state;
+  assign hash_unit_state_out = hash_unit_state;
+  hash_unit_state_t next_hash_unit_state;
 
   chacha_ctx_t chacha_ctx;
 
   chacha_ctx_t chacha_state;
+  assign chacha_state_out = chacha_state;
+  chacha_ctx_t chacha_next_state;
+
+  chacha_iterations_t current_iterations;
+  chacha_iterations_t next_current_iterations;
 
   // Context setup combinational block
   always_comb begin
@@ -200,6 +209,67 @@ module chacha_unit #(
 
     end else begin
       chacha_itef_ivsetup(chacha_ctx[15:12], nonce_in, block_counter_in[31:0]);
+    end
+  end
+
+  always_comb begin
+    next_current_iterations = current_iterations;
+    next_hash_unit_state = hash_unit_state;
+    chacha_next_state = chacha_state;
+
+    case (hash_unit_state)
+      types_pkg::U_INITIAL: begin
+        if (initiate_hash_pulse_in) begin
+          next_hash_unit_state = types_pkg::U_CONTEXT_LOADING;
+        end
+      end
+
+      types_pkg::U_CONTEXT_LOADING: begin
+        next_current_iterations = 8'h00;
+        chacha_next_state = chacha_ctx;
+        next_hash_unit_state = types_pkg::U_COLUMN_ROUND;
+      end
+
+      types_pkg::U_COLUMN_ROUND: begin
+        mix_column_round(chacha_next_state);
+        next_hash_unit_state = types_pkg::U_DIAGONAL_ROUND;
+      end
+
+      types_pkg::U_DIAGONAL_ROUND: begin
+        mix_diagonal_round(chacha_next_state);
+        next_hash_unit_state = types_pkg::U_COLUMN_ROUND;
+
+        next_current_iterations = current_iterations + 1;
+
+        if (next_current_iterations == iterations_in) begin
+          next_hash_unit_state = types_pkg::U_FINAL_ROUND;
+        end else begin
+          next_hash_unit_state = types_pkg::U_COLUMN_ROUND;
+        end
+      end
+
+      types_pkg::U_FINAL_ROUND: begin
+        final_addition(chacha_ctx, chacha_next_state);
+        next_hash_unit_state = types_pkg::U_READY;
+      end
+
+      default: begin
+        next_current_iterations = current_iterations;
+        next_hash_unit_state = hash_unit_state;
+        chacha_next_state = chacha_state;
+      end
+    endcase
+  end
+
+  always_ff @(posedge clk or negedge nrst) begin
+    if (!nrst) begin
+      hash_unit_state <= types_pkg::U_INITIAL;
+      current_iterations <= 8'h00;
+      chacha_state <= chacha_ctx;
+    end else begin
+      hash_unit_state <= next_hash_unit_state;
+      current_iterations <= next_current_iterations;
+      chacha_state <= chacha_next_state;
     end
   end
 endmodule
