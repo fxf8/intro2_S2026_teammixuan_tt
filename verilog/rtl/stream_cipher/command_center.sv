@@ -56,6 +56,7 @@ module command_center (
     input logic [7:0] input_byte_in,
 
     // Sent to Hash Generator (condition: non-command during MODE_ENCRYPT)
+    output logic message_byte_pulse_out,
     output logic [7:0] message_byte_out,
 
     // Sent to Hash Generator (condition: command CMD_IV_STD_READ) (Note: This
@@ -139,6 +140,8 @@ module command_center (
   assign command_code = cmd_t'(input_byte_in[4:0]);
 
   // Assign statements for new outputs
+  assign message_byte_pulse_out =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_ENCRYPT);
   assign message_byte_out = input_byte_in;
 
   assign read_iv_standard_pulse_out =
