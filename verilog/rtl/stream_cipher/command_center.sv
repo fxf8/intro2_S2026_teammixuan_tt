@@ -28,10 +28,11 @@
 //  10. Hash State Address (6 bits) (types_pkg::chacha_hash_state_address_t)
 //      a. Read (code: 1'0001)
 //      b. Write Mode (code: 1'0010) (on next input). Successive byte inputs increment address
-//  11. Start Hashing (code: 1'0011)
-//  12. Reset Hash (code: 1'0100)
-//  13. Read if Hash has Started (code: 1'0101)
-//  14. Read Mode (code: 1'0110) (Read Mode literally means read what the
+//  11. Read Hash Byte in State at Address (code: 1'0011)
+//  12. Start Hashing (code: 1'0100)
+//  13. Reset Hash (code: 1'0101)
+//  14. Read if Hash has Started (code: 1'0110)
+//  15. Read Mode (code: 1'0111) (Read Mode literally means read what the
 //  current mode is)
 
 // List of modes
@@ -111,8 +112,12 @@ module command_center (
     // Sent to Hash Generator (condition: command CMD_HASH_STATE_ADDR_READ)
     output logic read_hash_state_address_pulse_out,
 
+    // Sent to Hash Generator (condition: non-command during MODE_HASH_STATE_ADDR_SETUP)
     output logic write_hash_state_address_pulse_out,
     output types_pkg::chacha_hash_state_addr_t write_hash_state_address_out,
+
+    // Sent to Hash Generator
+    output logic read_hash_state_at_address_pulse_out,
 
     // Sent to Hash Generator (condition: command CMD_START_HASH)
     output logic start_hash_pulse_out,
@@ -191,6 +196,8 @@ module command_center (
   assign write_hash_state_address_pulse_out =
       (!command_in && pulse_in && command_mode == types_pkg::MODE_HASH_STATE_ADDR_SETUP);
   assign write_hash_state_address_out = types_pkg::chacha_hash_state_addr_t'(input_byte_in[5:0]);
+  assign read_hash_state_at_address_pulse_out =
+      (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATE_AT_ADDR_READ);
 
   assign start_hash_pulse_out =
       (command_in && pulse_in && command_code == types_pkg::CMD_START_HASH);
