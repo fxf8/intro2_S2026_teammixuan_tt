@@ -1,6 +1,6 @@
 // Note about pulse signals: A pulse will never be sent during an ongoing
 // operation
-module hash_generator #(
+module encryption_block #(
     parameter types_pkg::chacha_iterations_t DEFAULT_HASH_ITERATIONS = 20,
     parameter types_pkg::chacha_setup_standard_t DEFAULT_IV_STANDARD = types_pkg::S_DJB
 ) (
