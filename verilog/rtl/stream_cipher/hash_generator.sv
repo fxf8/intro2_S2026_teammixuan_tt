@@ -25,9 +25,21 @@ module hash_generator #(
     input types_pkg::chacha_iterations_t write_hash_iterations_in,
 
     // Sent to output holder (confirmation of writing to output holder)
-    output logic write_hash_iterations_pulse_out
+    output logic write_hash_iterations_pulse_out,
 
     // Received from command center
+    input logic write_hash_state_address_pulse_in,
+    input types_pkg::chacha_hash_state_addr_t write_hash_state_address_in,
+
+    // Sent to output holder (confirmation of writing to output holder)
+    input logic write_hash_state_address_pulse_out,
+
+    // Received from command center
+    input logic read_hash_state_at_address_pulse_in,
+
+    // Sent to output holder
+    output logic [7:0] hash_state_at_address_out,
+    output logic read_hash_state_at_address_pulse_out
 );
 
 endmodule
