@@ -15,6 +15,8 @@ module memory_block #(
     input logic [AddressWidth - 1:0] set_address_in,
     input logic set_address_pulse_in,
 
+    input logic reset_memory_pulse_in,
+
     output logic [MEMORY_WIDTH_BYTES * 8 - 1:0] memory_out,
     output logic [7:0] memory_at_address_out,
 
@@ -67,6 +69,10 @@ module memory_block #(
       end
 
       address <= next_address;
+
+      if (reset_memory_pulse_in) begin
+        memory <= 0;
+      end
     end
   end
 endmodule
