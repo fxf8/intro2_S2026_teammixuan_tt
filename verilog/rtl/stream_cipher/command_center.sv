@@ -182,7 +182,8 @@ module command_center (
       (command_in && pulse_in && command_code == types_pkg::CMD_BLOCK_CNT_ADDR_READ);
   assign write_block_counter_address_pulse_out =
       (!command_in && pulse_in && command_mode == types_pkg::MODE_BLOCK_COUNTER_ADDR_SETUP);
-  assign write_block_counter_address_out = input_byte_in[2:0];
+  assign write_block_counter_address_out =
+      types_pkg::chacha_block_counter_addr_t'(input_byte_in[2:0]);
 
   assign read_hash_state_address_pulse_out =
       (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATE_ADDR_READ);
