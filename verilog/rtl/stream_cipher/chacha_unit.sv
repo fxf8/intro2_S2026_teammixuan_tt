@@ -233,6 +233,12 @@ module chacha_unit (
       types_pkg::U_COLUMN_ROUND: begin
         mix_column_round(chacha_next_state);
         next_hash_unit_state = types_pkg::U_DIAGONAL_ROUND;
+
+        next_current_iterations = current_iterations + 1;
+
+        if (next_current_iterations == iterations_in) begin
+          next_hash_unit_state = types_pkg::U_FINAL_ROUND;
+        end
       end
 
       types_pkg::U_DIAGONAL_ROUND: begin
@@ -243,14 +249,18 @@ module chacha_unit (
 
         if (next_current_iterations == iterations_in) begin
           next_hash_unit_state = types_pkg::U_FINAL_ROUND;
-        end else begin
-          next_hash_unit_state = types_pkg::U_COLUMN_ROUND;
         end
       end
 
       types_pkg::U_FINAL_ROUND: begin
         final_addition(chacha_ctx, chacha_next_state);
         next_hash_unit_state = types_pkg::U_READY;
+      end
+
+      types_pkg::U_READY: begin
+        if (initiate_hash_pulse_in) begin
+          next_hash_unit_state = types_pkg::U_CONTEXT_LOADING;
+        end
       end
 
       default: begin
@@ -265,7 +275,7 @@ module chacha_unit (
     if (!nrst) begin
       hash_unit_state <= types_pkg::U_INITIAL;
       current_iterations <= 8'h00;
-      chacha_state <= chacha_ctx;
+      chacha_state <= 0;
     end else begin
       hash_unit_state <= next_hash_unit_state;
       current_iterations <= next_current_iterations;
