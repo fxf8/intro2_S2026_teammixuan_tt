@@ -134,10 +134,10 @@ module hash_generator #(
 
   chacha_ctx_raw_t chacha_hash_state_raw;
 
-  assign chacha_hash_state_raw = chacha_ctx_t'(chacha_hash_state);
+  assign chacha_hash_state_raw = chacha_ctx_raw_t'(chacha_hash_state);
   assign hash_state_at_address = chacha_hash_state_raw[hash_state_address*8+:8];
   assign hash_state_at_address_out = hash_state_at_address;
-  assign encrypted_byte_out = message_byte_in ^ hash_state_at_address;
+  assign encrypted_byte_out = buffered_message_byte ^ hash_state_at_address;
 
   chacha_setup_standard_t iv_standard;
   chacha_setup_standard_t next_iv_standard;
@@ -215,38 +215,48 @@ module hash_generator #(
 
       types_pkg::H_COMPUTING: begin
         next_initiate_hash = 0;
-        if (hash_unit_state == types_pkg::U_FINAL_ROUND) begin
-          next_hash_generator_state = types_pkg::H_READY;
-        end
 
-        if (hash_unit_state == types_pkg::U_READY) begin
+        if (hash_unit_state == types_pkg::U_READY && !initiate_hash) begin
           next_hash_generator_state = types_pkg::H_COPYING;
         end
       end
 
       types_pkg::H_COPYING: begin
         next_chacha_hash_state = computed_chacha_hash_state;
+        next_hash_generator_state = types_pkg::H_FINISHED_COPYING;
+      end
+
+      types_pkg::H_FINISHED_COPYING: begin
         next_hash_generator_state = types_pkg::H_READY;
+        next_initiate_hash = 1;
+        next_hash_state_address = 0;
+        increment_block_counter_pulse_out = 1;
       end
 
       types_pkg::H_READY: begin
+        next_initiate_hash = 0;
+
         if (reset_hash_pulse_in) begin
-          next_hash_generator_state = types_pkg::H_INITIAL;
+          next_hash_state_address = 0;
           reset_block_counter_pulse_out = 1;
+          next_hash_generator_state = types_pkg::H_INITIAL;
+
         end else begin
           if (is_buffered_message_waiting) begin
-            next_hash_state_address   = hash_state_address + 1;
+            next_hash_state_address = hash_state_address + 1;
             next_encrypted_byte_pulse = 1;
+            next_is_buffered_message_waiting = 0;
 
             // Check if index is at the end
             if (hash_state_address == (2 ** 6 - 1)) begin
-              // Reset index, increment block counter pulse
-              next_hash_state_address = 0;
-              increment_block_counter_pulse_out = 1;
-              next_hash_generator_state = types_pkg::H_COMPUTING;
+              next_hash_generator_state = types_pkg::H_EXHAUSTED;
             end
           end
         end
+      end
+
+      types_pkg::H_EXHAUSTED: begin
+        next_hash_generator_state = types_pkg::H_COMPUTING;
       end
     endcase
   end
@@ -257,6 +267,7 @@ module hash_generator #(
       initiate_hash <= 0;
       hash_state_address <= 0;
       encrypted_byte_pulse <= 0;
+
     end else begin
       hash_generator_state <= next_hash_generator_state;
       initiate_hash <= next_initiate_hash;

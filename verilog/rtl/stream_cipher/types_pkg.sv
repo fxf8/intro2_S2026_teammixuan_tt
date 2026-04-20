@@ -58,7 +58,9 @@ package types_pkg;
     H_INITIAL = 3'b000,  // The initial state when no hash is computed
     H_COMPUTING = 3'b001,
     H_COPYING = 3'b010,
-    H_READY = 3'b011  // When the hash is computed and the marker is not at the end of the buffer
+    H_FINISHED_COPYING = 3'b011,
+    H_READY = 3'b100,  // When the hash is computed and the marker is not at the end of the buffer
+    H_EXHAUSTED = 3'b101
   } hash_generator_state_t;
   // Note about `hash_generator_state`:
   // Hashes can only be requested when the hash generator is in either the
