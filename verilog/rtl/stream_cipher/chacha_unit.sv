@@ -5,8 +5,6 @@
 * https://github.com/jedisct1/libsodium/blob/master/src/libsodium/crypto_stream/chacha20/ref/chacha20_ref.c
 */
 
-typedef logic [31:0] chacha_word_t;
-typedef chacha_word_t [15:0] chacha_ctx_t;
 
 function automatic logic [31:0] rotate(logic [31:0] value, logic [4:0] amount);
   return value << amount | value >> (32 - amount);
@@ -45,7 +43,8 @@ chacha_keysetup(chacha_ctx *ctx, const uint8_t *k)
 }
 */
 
-task automatic chacha_keysetup(inout chacha_ctx_t ctx, inout types_pkg::chacha_key_t k);
+task automatic chacha_keysetup(output types_pkg::chacha_word_t [11:0] ctx,
+                               input types_pkg::chacha_key_t k);
   begin
     ctx[0]  = 32'h61707865;
     ctx[1]  = 32'h3320646e;
@@ -75,8 +74,9 @@ chacha_ivsetup(chacha_ctx *ctx, const uint8_t *iv, const uint8_t *counter)
 }
 */
 
-task automatic chacha_ivsetup(inout chacha_ctx_t ctx, inout types_pkg::chacha_byte_t [31:0] iv,
-                              inout types_pkg::chacha_byte_t [31:0] counter);
+task automatic chacha_djb_ivsetup(inout types_pkg::chacha_word_t [15:12] ctx,
+                                  input types_pkg::chacha_byte_t [7:0] iv,
+                                  input types_pkg::chacha_byte_t [7:0] counter);
   begin
     ctx[12] = {counter[3], counter[2], counter[1], counter[0]};
     ctx[13] = {counter[7], counter[6], counter[5], counter[4]};
@@ -96,8 +96,9 @@ chacha_ietf_ivsetup(chacha_ctx *ctx, const uint8_t *iv, const uint8_t *counter)
 }
 */
 
-task automatic chacha_itef_ivsetup(inout chacha_ctx_t ctx, inout types_pkg::chacha_byte_t [31:0] iv,
-                                   inout types_pkg::chacha_byte_t [31:0] counter);
+task automatic chacha_itef_ivsetup(output types_pkg::chacha_word_t [15:12] ctx,
+                                   input types_pkg::chacha_byte_t [11:0] iv,
+                                   input types_pkg::chacha_byte_t [3:0] counter);
   begin
     ctx[12] = {counter[3], counter[2], counter[1], counter[0]};
     ctx[13] = {iv[3], iv[2], iv[1], iv[0]};
@@ -118,7 +119,7 @@ QUARTERROUND(x3, x4, x9, x14)
 
 */
 
-task automatic mix_column_round(inout chacha_word_t [15:0] state);
+task automatic mix_column_round(inout types_pkg::chacha_ctx_t state);
   begin
     quarter_round(state[0], state[4], state[8], state[12]);
     quarter_round(state[1], state[5], state[9], state[13]);
@@ -127,7 +128,7 @@ task automatic mix_column_round(inout chacha_word_t [15:0] state);
   end
 endtask
 
-task automatic mix_diagonal_round(inout chacha_word_t [15:0] state);
+task automatic mix_diagonal_round(inout types_pkg::chacha_ctx_t state);
   begin
     quarter_round(state[0], state[5], state[10], state[15]);
     quarter_round(state[1], state[6], state[11], state[12]);
@@ -155,7 +156,8 @@ x14 = PLUS(x14, j14);
 x15 = PLUS(x15, j15);
 */
 
-task automatic update_state(input chacha_ctx_t ctx, inout chacha_word_t [15:0] state);
+task automatic update_state(input types_pkg::chacha_ctx_t ctx,
+                            inout types_pkg::chacha_word_t [15:0] state);
   begin
     for (integer index = 0; index < 16; index = index + 1) begin
       state[index] = state[index] + ctx[index];
@@ -164,14 +166,40 @@ task automatic update_state(input chacha_ctx_t ctx, inout chacha_word_t [15:0] s
 endtask
 
 
-module hash_unit #(
+module chacha_unit #(
     parameter types_pkg::chacha_iterations_t DEFAULT_CHACHA_ITERATIONS = 20
 ) (
     input logic clk,
     nrst,  //clock and negative-edge reset
     //other signals here
 
+    input logic initiate_hash_pulse_in,
+
     input types_pkg::chacha_key_t key_in,
-    input logic initiate_pulse_in
+    input types_pkg::chacha_nonce_t nonce_in,
+    input types_pkg::chacha_block_counter_t block_counter_in,
+
+    input types_pkg::chacha_setup_standard_t setup_standard_in,
+    input types_pkg::chacha_iterations_t iterations_in,
+
+    output types_pkg::hash_unit_state_t state_out,
+    output types_pkg::chacha_ctx_t chacha_state_out
 );
+  typedef types_pkg::chacha_ctx_t chacha_ctx_t;
+
+  chacha_ctx_t chacha_ctx;
+
+  chacha_ctx_t chacha_state;
+
+  // Context setup combinational block
+  always_comb begin
+    chacha_keysetup(chacha_ctx[11:0], key_in);
+
+    if (setup_standard_in == types_pkg::S_DJB) begin
+      chacha_djb_ivsetup(chacha_ctx[15:12], nonce_in[7:0], block_counter_in);
+
+    end else begin
+      chacha_itef_ivsetup(chacha_ctx[15:12], nonce_in, block_counter_in[31:0]);
+    end
+  end
 endmodule

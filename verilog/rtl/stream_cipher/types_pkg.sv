@@ -84,17 +84,27 @@ package types_pkg;
   typedef logic [63:0] chacha_block_counter_t;
   typedef logic [2:0] chacha_block_counter_index_t;
 
-  typedef enum logic [1:0] {U_INITIAL = 0} hash_unit_state_t;
-
-  typedef enum logic {
-    O_EMPTY = 0,
-    O_READY = 1
-  } output_holder_state_t;
+  typedef logic [31:0] chacha_word_t;
+  typedef chacha_word_t [15:0] chacha_ctx_t;
 
   typedef enum logic {
     S_DJB  = 0,  // Nonce is 64 bits
     S_ITEF = 1   // Nonce is 96 bits
   } chacha_setup_standard_t;
+
+  typedef enum logic [2:0] {
+    U_INITIAL = 3'b000,
+    U_CONTEXT_LOADING = 3'b001,
+    U_COLUMN_ROUND = 3'b010,
+    U_DIAGONAL_ROUND = 3'b011,
+    U_FINAL_ROUND = 3'b100,
+    U_READY = 3'b101
+  } hash_unit_state_t;
+
+  typedef enum logic {
+    O_EMPTY = 0,
+    O_READY = 1
+  } output_holder_state_t;
 endpackage
 
 `endif
