@@ -1,5 +1,4 @@
-// The module hash_unit is meant to perform the hash operation (multiple units could run in
-// parallel)
+// The module hash_unit is meant to perform the chacha hash operation
 
 /* Reference from libsodium
 * https://github.com/jedisct1/libsodium/blob/master/src/libsodium/crypto_stream/chacha20/ref/chacha20_ref.c
