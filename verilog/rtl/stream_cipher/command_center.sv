@@ -120,8 +120,6 @@ module command_center (
     // Sent to Hash Generator
     output logic read_hash_state_at_address_pulse_out,
 
-    // Sent to Hash Generator (condition: command CMD_START_HASH)
-    output logic start_hash_pulse_out,
     // Sent to Hash Generator (condition: command CMD_RESET_HASH)
     output logic reset_hash_pulse_out,
     // Sent to Hash Generator (condition: command CMD_HASH_STATUS)
@@ -202,8 +200,6 @@ module command_center (
   assign read_hash_state_at_address_pulse_out =
       (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATE_AT_ADDR_READ);
 
-  assign start_hash_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_START_HASH);
   assign reset_hash_pulse_out =
       (command_in && pulse_in && command_code == types_pkg::CMD_RESET_HASH);
   assign read_hash_status_pulse_out =

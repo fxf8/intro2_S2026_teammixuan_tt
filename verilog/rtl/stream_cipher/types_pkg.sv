@@ -30,10 +30,9 @@ package types_pkg;
     CMD_HASH_STATE_ADDR_WRITE   = 5'b10010,
     CMD_HASH_STATE_AT_ADDR_READ = 5'b10011,
 
-    CMD_START_HASH  = 5'b10100,
-    CMD_RESET_HASH  = 5'b10101,
-    CMD_HASH_STATUS = 5'b10110,
-    CMD_MODE_READ   = 5'b10111
+    CMD_RESET_HASH  = 5'b10100,
+    CMD_HASH_STATUS = 5'b10101,
+    CMD_MODE_READ   = 5'b10110
   } cmd_t;
 
   typedef enum logic [3:0] {
@@ -90,6 +89,7 @@ package types_pkg;
 
   typedef logic [31:0] chacha_word_t;
   typedef chacha_word_t [15:0] chacha_ctx_t;
+  typedef logic [511:0] chacha_ctx_raw_t;
 
   typedef enum logic {
     S_DJB  = 0,  // Nonce is 64 bits
