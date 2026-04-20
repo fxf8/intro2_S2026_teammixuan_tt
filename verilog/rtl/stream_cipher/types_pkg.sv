@@ -11,25 +11,28 @@ package types_pkg;
     CMD_N_ITER_READ  = 5'b00011,
     CMD_N_ITER_WRITE = 5'b00100,  // Switch to MODE_HASH_ITERATIONS_SETUP
 
-    CMD_NONCE_READ      = 5'b00101,
-    CMD_NONCE_WRITE     = 5'b00110,  // Switch to MODE_NONCE_BYTES_INPUT
-    CMD_NONCE_IDX_READ  = 5'b00111,
-    CMD_NONCE_IDX_WRITE = 5'b01000,  // Switch to MODE_NONCE_BYTES_INDEX_SETUP
+    CMD_NONCE_READ       = 5'b00101,
+    CMD_NONCE_WRITE      = 5'b00110,  // Switch to MODE_NONCE_BYTES_INPUT
+    CMD_NONCE_ADDR_READ  = 5'b00111,
+    CMD_NONCE_ADDR_WRITE = 5'b01000,  // Switch to MODE_NONCE_BYTES_INDEX_SETUP
 
-    CMD_KEY_READ      = 5'b01001,
-    CMD_KEY_WRITE     = 5'b01010,  // Switch to MODE_KEY_BYTES_INPUT
-    CMD_KEY_IDX_READ  = 5'b01011,
-    CMD_KEY_IDX_WRITE = 5'b01100,  // Switch to MODE_KEY_BYTES_INDEX_SETUP
+    CMD_KEY_READ       = 5'b01001,
+    CMD_KEY_WRITE      = 5'b01010,  // Switch to MODE_KEY_BYTES_INPUT
+    CMD_KEY_ADDR_READ  = 5'b01011,
+    CMD_KEY_ADDR_WRITE = 5'b01100,  // Switch to MODE_KEY_BYTES_INDEX_SETUP
 
-    CMD_BLOCK_CNT_READ      = 5'b01101,
-    CMD_BLOCK_CNT_WRITE     = 5'b01110,  // Switch to MODE_BLOCK_COUNTER_INPUT
-    CMD_BLOCK_CNT_IDX_READ  = 5'b01111,
-    CMD_BLOCK_CNT_IDX_WRITE = 5'b10000,  // Switch to MODE_BLOCK_COUNTER_INDEX_SETUP
+    CMD_BLOCK_CNT_READ       = 5'b01101,
+    CMD_BLOCK_CNT_WRITE      = 5'b01110,  // Switch to MODE_BLOCK_COUNTER_INPUT
+    CMD_BLOCK_CNT_ADDR_READ  = 5'b01111,
+    CMD_BLOCK_CNT_ADDR_WRITE = 5'b10000,  // Switch to MODE_BLOCK_COUNTER_INDEX_SETUP
 
-    CMD_START_HASH  = 5'b10001,
-    CMD_RESET_HASH  = 5'b10010,
-    CMD_HASH_STATUS = 5'b10011,
-    CMD_STATUS_READ = 5'b10100
+    CMD_HASH_STATE_ADDR_READ  = 5'b10001,
+    CMD_HASH_STATE_ADDR_WRITE = 5'b10010,
+
+    CMD_START_HASH  = 5'b10011,
+    CMD_RESET_HASH  = 5'b10100,
+    CMD_HASH_STATUS = 5'b10101,
+    CMD_STATUS_READ = 5'b10110
   } cmd_t;
 
   typedef enum logic [3:0] {
@@ -83,6 +86,8 @@ package types_pkg;
 
   typedef logic [63:0] chacha_block_counter_t;
   typedef logic [2:0] chacha_block_counter_index_t;
+
+  typedef logic [5:0] chacha_hash_state_address_t;
 
   typedef logic [31:0] chacha_word_t;
   typedef chacha_word_t [15:0] chacha_ctx_t;
