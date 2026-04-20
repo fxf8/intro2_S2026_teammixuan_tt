@@ -62,7 +62,7 @@ package types_pkg;
   } encryption_block_state_t;
 
   typedef enum logic [2:0] {
-    H_GROUND = 3'b000,  // The initial ground state when no hash is computed
+    H_INITIAL = 3'b000,  // The initial state when no hash is computed
     H_COMPUTING = 3'b001,
     H_READY = 3'b010,  // When the hash is computed and the marker is not at the end of the buffer
     H_QUERRIED = 3'b011,  // When a hashed byte has been requested
