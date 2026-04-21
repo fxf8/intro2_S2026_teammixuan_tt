@@ -4,9 +4,6 @@
 * https://github.com/jedisct1/libsodium/blob/master/src/libsodium/crypto_stream/chacha20/ref/chacha20_ref.c
 */
 
-
-
-
 module chacha_unit (
     input logic clk,
     nrst,  //clock and negative-edge reset
