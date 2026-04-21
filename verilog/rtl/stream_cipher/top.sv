@@ -64,8 +64,18 @@ module top (
     // Output Byte
     output logic [7:0] output_byte
 );
-  typedef types_pkg::interface_state_t interface_state_t;
-  typedef types_pkg::output_holder_state_t output_holder_state_t;
+  interface_fsm interface_fsm_inst ();
 
+  reader reader_inst ();
+
+  command_center command_center_inst ();
+
+  memory_block key_memory_inst ();
+  memory_block nonce_memory_inst ();
+  block_counter block_counter_inst ();
+
+  encryption_block encryption_block_inst ();
+
+  output_holder output_holder_inst ();
 endmodule
 
