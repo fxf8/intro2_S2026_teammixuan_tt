@@ -52,19 +52,49 @@ module top (
     //other signals here
 
     // General Data Pins
-    input logic [7:0] input_byte,
-    input logic command,
+    input logic [7:0] input_byte_in,
+    input logic command_in,
 
     // 4-Phase-Handshake Interfacing pins in order of change
-    input  logic input_request,
-    output logic input_acknowledged,
-    output logic output_byte_is_ready,
-    input  logic output_acknowledge,
+    input  logic input_request_in,
+    output logic input_acknowledged_out,
+    output logic output_byte_is_ready_out,
+    input  logic output_acknowledge_in,
 
     // Output Byte
     output logic [7:0] output_byte
 );
-  interface_fsm interface_fsm_inst ();
+  typedef types_pkg::interface_state_t interface_state_t;
+  typedef types_pkg::chacha_setup_standard_t chacha_setup_standard_t;
+  typedef types_pkg::chacha_iterations_t chacha_iterations_t;
+  typedef types_pkg::chacha_byte_t chacha_byte_t;
+  typedef types_pkg::chacha_nonce_addr_t chacha_nonce_addr_t;
+  typedef types_pkg::chacha_key_addr_t chacha_key_addr_t;
+  typedef types_pkg::chacha_block_counter_addr_t chacha_block_counter_addr_t;
+  typedef types_pkg::chacha_hash_state_addr_t chacha_hash_state_addr_t;
+  typedef types_pkg::cmd_mode_t cmd_mode_t;
+
+  // Interface FSM driven nets ----- "i_"
+  interface_state_t i_interface_state;
+
+  // Reader driven nets ----- "r_"
+  logic [7:0] r_input_byte_pulsed_out;
+  logic r_command_pulsed_out;
+  logic r_pulse_out;
+
+  // Command center driven nets ----- "c_"
+  // Sent to Hash Generator
+  logic c_message_byte_pulse_out;
+  logic [7:0] c_message_byte_out;
+
+  interface_fsm interface_fsm_inst (
+      .clk(clk),
+      .nrst(nrst),
+      .input_request_in(),
+      .output_acknowledge_in(),
+      .output_holder_state_in(),
+      .interface_state_out()
+  );
 
   reader reader_inst ();
 
