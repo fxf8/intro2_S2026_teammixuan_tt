@@ -287,7 +287,7 @@ module top (
 
   // Output Holder Driven Nets ----- "o_"
   output_holder_state_t o_output_holder_state;
-  interface_state_t o_interface_state;
+  logic [7:0] o_data_out;
 
   interface_fsm interface_fsm_inst (
       .clk (clk),
@@ -458,7 +458,7 @@ module top (
       .nonce_in(n_nonce_memory),
       .block_counter_in(b_block_counter_memory),
 
-      .iv_standard_out(e_iv_standard_out),
+      .iv_standard_out(e_iv_standard),
 
       .write_iv_standard_pulse_in(c_write_iv_standard_pulse),
       .write_iv_standard_in(c_write_iv_standard),
@@ -472,7 +472,7 @@ module top (
 
       .read_hash_iterations_pulse_in(c_read_hash_iterations_pulse),
 
-      .hash_iterations_out(e_hash_iterations_out),
+      .hash_iterations_out(e_hash_iterations),
       .read_hash_iterations_pulse_out(e_read_hash_iterations_pulse),
 
       .write_hash_state_address_pulse_in(c_write_hash_state_address_pulse),
@@ -482,15 +482,37 @@ module top (
 
       .read_hash_state_at_address_pulse_in(c_read_hash_state_at_address_pulse),
 
-      .hash_state_at_address_out(e_hash_state_at_address_out),
+      .hash_state_at_address_out(e_hash_state_at_address),
       .read_hash_state_at_address_pulse_out(e_read_hash_state_at_address_pulse),
 
       .reset_hash_pulse_in(c_reset_hash_pulse),
 
       .increment_block_counter_pulse_out(e_increment_block_counter_pulse),
-      .reset_block_counter_pulse_out(e_reset_block_counter_pulse),
+      .reset_block_counter_pulse_out(e_reset_block_counter_pulse)
   );
 
-  output_holder output_holder_inst ();
+  output_holder output_holder_inst (
+      .clk (clk),
+      .nrst(nrst),
+
+      .data_in(e_encrypted_byte),
+      .data_in_pulse(e_encrypted_byte_pulse),
+
+      .interface_state(i_interface_state),
+
+      .output_holder_state_out(o_output_holder_state),
+      .data_out(o_data_out)
+  );
+
+  output_mux output_mux_inst (
+      .data_in(o_data_out),
+      .output_holder_state(o_output_holder_state),
+
+      .interface_state(i_interface_state),
+
+      .data_out(output_byte),
+      .output_byte_is_ready(output_byte_is_ready_out),
+      .input_acknowledged(input_acknowledged_out)
+  );
 endmodule
 
