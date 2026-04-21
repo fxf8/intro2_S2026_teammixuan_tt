@@ -67,14 +67,14 @@ module command_center (
     output logic write_iv_standard_pulse_out,
     output types_pkg::chacha_setup_standard_t write_iv_standard_out,
 
-    // Sent to Nonce Storage
-    output logic read_nonce_bytes_pulse_out,
-
     // Sent to Hash Generator (condition: command CMD_N_ITER_READ)
     output logic read_hash_iterations_pulse_out,
     // Sent to Hash Generator (condition: non-command during MODE_HASH_ITERATIONS_SETUP)
     output logic write_hash_iterations_pulse_out,
     output types_pkg::chacha_iterations_t write_hash_iterations_out,
+
+    // Sent to Nonce Storage
+    output logic read_nonce_bytes_pulse_out,
 
     // Sent to Nonce Storage (condition: non-command during MODE_NONCE_BYTES_INPUT)
     output logic write_nonce_byte_pulse_out,
