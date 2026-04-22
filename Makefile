@@ -236,8 +236,8 @@ sim_%_src:
 			-Wno-fatal \
 			--top-module $*_tb \
 			$(SRC)/types_pkg.sv \
-			$(SRC)/memory_block_if.sv \
-			$(SRC)/memory_block.sv \
+			$(SRC)/*_if.sv \
+			$(SRC)/chacha_unit.sv \
 			$(TB)/$*_tb.sv; \
 	else \
 		iverilog -g2012 -o $(BUILD)/$*_tb -Y .sv -y $(SRC) $(TB)/$*_tb.sv; \
@@ -265,7 +265,7 @@ syn_%: check_env
 	@mkdir -p $(MAP)
 	@if [ "$(PROJECT)" = "stream_cipher" ]; then \
 		echo -e "Performing Specialized Synthesis for project \`stream_cipher\`\n"; \
-		$(YOSYS) -d -p "read_verilog -sv -noblackbox $(SRC)/types_pkg.sv $(SRC)/*; \
+		$(YOSYS) -d -p "read_verilog -sv -noblackbox $(SRC)/types_pkg.sv $(SRC)/*_if.sv $(SRC)/*; \
                         synth -top $*; \
                         dfflibmap -liberty $(LIBERTY); \
                         abc -liberty $(LIBERTY); \
@@ -315,7 +315,11 @@ cells : $(ICE) $(SRC) $(FPGA_TOP_DIR) $(PINMAP)
 # Lint Design and TB Only
 .PHONY: vlint_%
 vlint_%:
-	@verilator --lint-only -Wall --timing -y $(SRC) $(SRC)/$*.sv $(TB)/$*_tb.sv
+	@verilator --lint-only -Wall --timing -y $(SRC) \
+		$(SRC)/types_pkg.sv \
+		$(SRC)/*_if.sv \
+		$(SRC)/$*.sv \
+		$(TB)/$*_tb.sv
 	@echo -e "\nNo linting errors found!\n"
 
 # ================================================
