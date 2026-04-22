@@ -37,7 +37,7 @@ module output_holder (
 
     // Inputs from Command Center
     input logic command_center_read_mode_pulse_in,
-    types_pkg::cmd_mode_t command_mode_in,
+    input types_pkg::cmd_mode_t command_mode_in,
 
     // Output sent to interface fsm
     output types_pkg::output_holder_state_t output_holder_state_out,
