@@ -126,14 +126,6 @@ module command_center (
     end
   end  // Mode Switching FF
 
-  // Localparams for AddressWidth
-  localparam int NonceMemoryWidthBytes = 12;
-  localparam int NonceAddressWidth = $clog2(NonceMemoryWidthBytes);
-  localparam int KeyMemoryWidthBytes = 32;
-  localparam int KeyAddressWidth = $clog2(KeyMemoryWidthBytes);
-  localparam int BlockCounterMemoryWidthBytes = 8;
-  localparam int BlockCounterAddressWidth = $clog2(BlockCounterMemoryWidthBytes);
-
   typedef types_pkg::chacha_nonce_addr_t chacha_nonce_addr_t;
   typedef types_pkg::chacha_key_addr_t chacha_key_addr_t;
   typedef types_pkg::chacha_block_counter_addr_t chacha_block_counter_addr_t;
