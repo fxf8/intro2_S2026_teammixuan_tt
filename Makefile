@@ -228,17 +228,27 @@ check_env:
 	fi
 # Source Compilation and simulation of Design
 .PHONY: sim_%_src
-sim_%_src: 
+sim_%_src:
 	@echo -e "Creating executable for source simulation...\n"
 	@mkdir -p $(BUILD) && rm -rf $(BUILD)/*
 	@if [ "$(PROJECT)" = "stream_cipher" ]; then \
-		iverilog -g2012 -o $(BUILD)/$*_tb $(SRC)/types_pkg.sv -Y .sv -y $(SRC) $(TB)/$*_tb.sv; \
+		verilator --binary --trace --timing -j 0 -Mdir $(BUILD)/ -o $*_tb \
+			-Wno-fatal \
+			--top-module $*_tb \
+			$(SRC)/types_pkg.sv \
+			$(SRC)/memory_block_if.sv \
+			$(SRC)/memory_block.sv \
+			$(TB)/$*_tb.sv; \
 	else \
 		iverilog -g2012 -o $(BUILD)/$*_tb -Y .sv -y $(SRC) $(TB)/$*_tb.sv; \
 	fi
 	@echo -e "\nSource Compilation complete!\n"
 	@echo -e "Simulating source...\n"
-	@vvp -l vvp_sim.log $(BUILD)/$*_tb
+	@if [ "$(PROJECT)" = "stream_cipher" ]; then \
+		./$(BUILD)/$*_tb; \
+	else \
+	    @vvp -l vvp_sim.log $(BUILD)/$*_tb; \
+	fi
 	@echo -e "\nSimulation complete!\n"
 	@echo -e "\nOpening waveforms...\n"
 	@if [ -f $(WAVES)/$*.gtkw ]; then \

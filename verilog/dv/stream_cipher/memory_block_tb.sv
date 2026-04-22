@@ -249,6 +249,18 @@ module memory_block_tb ();
     $dumpvars;
   end
 
+  memory_block_if #(.MEMORY_WIDTH_BYTES(MEMORY_WIDTH_BYTES)) dut_bus ();
+
+  assign dut_bus.store_byte_in = tb_store_byte_in;
+  assign dut_bus.store_byte_pulse_in = tb_store_byte_pulse_in;
+  assign dut_bus.set_address_in = tb_set_address_in;
+  assign dut_bus.set_address_pulse_in = tb_set_address_pulse_in;
+  assign tb_memory_out = dut_bus.memory_out;
+  assign tb_memory_at_address_out = dut_bus.memory_at_address_out;
+  assign tb_received_byte_pulse_out = dut_bus.received_byte_pulse_out;
+  assign tb_received_address_pulse_out = dut_bus.received_address_pulse_out;
+  assign tb_address_out = dut_bus.address_out;
+
   // DUT Instantiation
   memory_block #(
       .MEMORY_WIDTH_BYTES(MEMORY_WIDTH_BYTES),
@@ -256,6 +268,8 @@ module memory_block_tb ();
   ) dut (
       .clk(tb_clk),
       .nrst(tb_nrst),
+      .memory_block_port(dut_bus.memory_block_port)
+      /*
       .store_byte_in(tb_store_byte_in),
       .store_byte_pulse_in(tb_store_byte_pulse_in),
       .set_address_in(tb_set_address_in),
@@ -265,6 +279,7 @@ module memory_block_tb ();
       .received_byte_pulse_out(tb_received_byte_pulse_out),
       .received_address_pulse_out(tb_received_address_pulse_out),
       .address_out(tb_address_out)
+      */
   );
 
   // Test bench main process
