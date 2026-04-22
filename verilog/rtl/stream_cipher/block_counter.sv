@@ -11,6 +11,9 @@ module block_counter #(
     input logic clk,
     nrst,  //clock and negative-edge reset
 
+    block_counter_if.block_counter_port block_counter_port
+
+    /*
     input logic [7:0] store_byte_in,
     input logic store_byte_pulse_in,
 
@@ -28,7 +31,21 @@ module block_counter #(
     output logic received_address_pulse_out,
 
     output logic [AddressWidth - 1:0] address_out
+    */
 );
+  assign store_byte_in = block_counter_port.store_byte_in;
+  assign store_byte_pulse_in = block_counter_port.store_byte_pulse_in;
+  assign set_address_in = block_counter_port.set_address_in;
+  assign set_address_pulse_in = block_counter_port.set_address_pulse_in;
+  assign reset_memory_pulse_in = block_counter_port.reset_memory_pulse_in;
+  assign increment_block_counter_pulse_in = block_counter_port.increment_block_counter_pulse_in;
+
+  assign block_counter_port.memory_out = memory_out;
+  assign block_counter_port.memory_at_address_out = memory_at_address_out;
+  assign block_counter_port.received_byte_pulse_out = received_byte_pulse_out;
+  assign block_counter_port.received_address_pulse_out = received_address_pulse_out;
+  assign block_counter_port.address_out = address_out;
+
   logic [MEMORY_WIDTH_BYTES * 8 - 1:0] memory;
   assign memory_out = memory;
   assign memory_at_address_out = memory[address*8+:8];
