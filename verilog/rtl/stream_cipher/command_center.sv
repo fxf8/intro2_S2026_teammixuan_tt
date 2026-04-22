@@ -1,51 +1,3 @@
-// List of commands
-//  1. Switch to Encrypt Byte Mode (code: 0) (each later byte input is encrypted)
-//  2. IV Setup Standard (ivsetup, itef_ivsetup) (types_pkg::chacha_setup_standard_t)
-//      a. Read (code: 1)
-//      b. Write Mode (code: 10)
-//  3. Hash Iterations (8 bits) (types_pkg::chacha_iterations_t)
-//      a. Read (code: 11)
-//      b. Write Mode (code: 100) (on next input)
-//  4. Nonce Bytes (96 bits) (types_pkg::chacha_nonce_t)
-//      a. Read at Address (code: 101)
-//      b. Write at Address Mode (code: 110) (on next input). Successive byte inputs increment address
-//  5. Nonce Bytes Address (types_pkg::chacha_nonce_addr_t)
-//      a. Read (code: 111)
-//      b. Write Mode (code: 1000) (on next input).
-//  6. Key Bytes (256 bits) (types_pkg::chacha_key_t)
-//      a. Read at Address (code: 1001)
-//      b. Write at Address (code: 1010) (on next input). Successive byte inputs increment address
-//  7. Key Bytes Address (5 bits) (types_pkg::chacha_key_addr_t)
-//      a. Read (code: 1011)
-//      b. Write Mode (code: 1100) (on next inputs)
-//  8. Block Counter (64 bits)
-//      a. Read (code: 1101)
-//      b. Write at Address (code: 1110) (on next input) (Note: This writes
-//      from LSB to MSB)
-//  9. Block Counter Address (3 bits)
-//      a. Read (code: 1111)
-//      b. Write Mode (code: 1'0000) (on next input). Successive byte inputs increment address
-//  10. Hash State Address (6 bits) (types_pkg::chacha_hash_state_address_t)
-//      a. Read (code: 1'0001)
-//      b. Write Mode (code: 1'0010) (on next input). Successive byte inputs increment address
-//  11. Read Hash Byte in State at Address (code: 1'0011)
-//  12. Start Hashing (code: 1'0100)
-//  13. Reset Hash (code: 1'0101)
-//  14. Read if Hash has Started (code: 1'0110)
-//  15. Read Mode (code: 1'0111) (Read Mode literally means read what the
-//  current mode is)
-
-// List of modes
-// 1. Encrypt Mode (each non-command input is encrypted)
-// 2. IV Standard Setup Mode (each non-command sets the IV setup standard. Either DJB or RFC 7539 (ITEF))
-// 3. Hash Iterations Setup Mode
-// 4. Nonce Bytes Input Mode
-// 5. Nonce Bytes Address Setup Mode
-// 6. Key Bytes Input Mode
-// 7. Key Bytes Address Setup Mode
-// 8. Block Counter Input Mode
-// 9. Block Counter Address Setup Mode
-
 module command_center (
     input logic clk,
     nrst,  //clock and negative-edge reset
@@ -173,4 +125,86 @@ module command_center (
       command_mode <= next_command_mode;
     end
   end  // Mode Switching FF
+
+  // Localparams for AddressWidth
+  localparam int NonceMemoryWidthBytes = 12;
+  localparam int NonceAddressWidth = $clog2(NonceMemoryWidthBytes);
+  localparam int KeyMemoryWidthBytes = 32;
+  localparam int KeyAddressWidth = $clog2(KeyMemoryWidthBytes);
+  localparam int BlockCounterMemoryWidthBytes = 8;
+  localparam int BlockCounterAddressWidth = $clog2(BlockCounterMemoryWidthBytes);
+
+  typedef types_pkg::chacha_nonce_addr_t chacha_nonce_addr_t;
+  typedef types_pkg::chacha_key_addr_t chacha_key_addr_t;
+  typedef types_pkg::chacha_block_counter_addr_t chacha_block_counter_addr_t;
+  typedef types_pkg::chacha_setup_standard_t chacha_setup_standard_t;
+  typedef types_pkg::chacha_iterations_t chacha_iterations_t;
+  typedef types_pkg::chacha_hash_state_addr_t chacha_hash_state_addr_t;
+
+  // Nonce Memory Connections
+  assign read_nonce_byte_at_address_port.read_byte_at_address_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_NONCE_READ);
+  assign write_nonce_byte_port.store_byte_in = input_byte_in;
+  assign write_nonce_byte_port.store_byte_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_NONCE_BYTES_INPUT);
+  assign read_nonce_address_port.read_address_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_NONCE_ADDR_READ);
+  assign write_nonce_address_port.set_address_in = chacha_nonce_addr_t'(input_byte_in);
+  assign write_nonce_address_port.set_address_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_NONCE_BYTES_ADDR_SETUP);
+  assign reset_nonce_memory_port.reset_memory_pulse_in =
+      (command_in && pulse_in && command_code == types_pkg::CMD_NONCE_RESET);
+
+  // Key Memory Connections
+  assign read_key_byte_at_address_port.read_byte_at_address_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_KEY_READ);
+  assign write_key_byte_port.store_byte_in = input_byte_in;
+  assign write_key_byte_port.store_byte_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_KEY_BYTES_INPUT);
+  assign read_key_address_port.read_address_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_KEY_ADDR_READ);
+  assign write_key_address_port.set_address_in = chacha_key_addr_t'(input_byte_in);
+  assign write_key_address_port.set_address_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_KEY_BYTES_ADDR_SETUP);
+  assign reset_key_memory_port.reset_memory_pulse_in =
+      (command_in && pulse_in && command_code == types_pkg::CMD_KEY_RESET);
+
+  // Block Counter Connections
+  assign read_block_counter_byte_at_address_port.read_byte_at_address_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_BLOCK_CNT_READ);
+  assign write_block_counter_port.store_byte_in = input_byte_in;
+  assign write_block_counter_port.store_byte_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_BLOCK_COUNTER_INPUT);
+  assign read_block_counter_address_port.read_address_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_BLOCK_CNT_ADDR_READ);
+  assign write_block_counter_address_port.set_address_in =
+      chacha_block_counter_addr_t'(input_byte_in);
+  assign write_block_counter_address_port.set_address_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_BLOCK_COUNTER_ADDR_SETUP);
+  assign reset_block_counter_port.reset_memory_pulse_in =
+      (command_in && pulse_in && command_code == types_pkg::CMD_BLOCK_CNT_RESET);
+
+  // Encryption Block Connections
+  assign command_center_port.message_byte_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_ENCRYPT);
+  assign command_center_port.message_byte_in = input_byte_in;
+  assign command_center_port.write_iv_standard_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_IV_STANDARD_SETUP);
+  assign command_center_port.write_iv_standard_in = chacha_setup_standard_t'(input_byte_in[0]);
+  assign command_center_port.write_hash_iterations_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_HASH_ITERATIONS_SETUP);
+  assign command_center_port.write_hash_iterations_in = chacha_iterations_t'(input_byte_in);
+  assign command_center_port.write_hash_state_address_pulse_in =
+      (!command_in && pulse_in && command_mode == types_pkg::MODE_HASH_STATE_ADDR_SETUP);
+  assign command_center_port.write_hash_state_address_in = chacha_hash_state_addr_t'(input_byte_in);
+  assign command_center_port.read_iv_standard_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_IV_STD_READ);
+  assign command_center_port.read_hash_iterations_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_N_ITER_READ);
+  assign command_center_port.read_hash_state_address_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATE_ADDR_READ);
+  assign command_center_port.read_hash_state_at_address_pulse =
+      (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATE_AT_ADDR_READ);
+  assign command_center_port.reset_hash_pulse_in =
+      (command_in && pulse_in && command_code == types_pkg::CMD_RESET_HASH);
 endmodule
