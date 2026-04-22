@@ -37,22 +37,21 @@ module stream_cipher (
       .nrst(rst_n),
 
       // General Data Pins
-      .input_byte(ui_in),
-      .is_key(uio_in[4]),
-      .reset_hash(uio_in[5]),
+      .input_byte_in(ui_in),
+      .command_in(uio_in[4]),
 
       // 4-Phase-Handshake Interfacing pins in order of change
-      .input_request(uio_in[0]),
-      .input_acknowledged(uio_out[1]),
-      .output_byte_is_ready(uio_out[2]),
-      .output_acknowledge(uio_in[3]),
+      .input_request_in(uio_in[0]),
+      .input_acknowledged_out(uio_out[1]),
+      .output_byte_is_ready_out(uio_out[2]),
+      .output_acknowledge_in(uio_in[3]),
 
       // Output Byte
       .output_byte(uo_out)
   );
 
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, uio_in[1], uio_in[2], uio_in[6], uio_in[7], 1'b0};
+  wire _unused = &{ena, uio_in[1], uio_in[2], uio_in[5], uio_in[6], uio_in[7], 1'b0};
 
 endmodule
 
