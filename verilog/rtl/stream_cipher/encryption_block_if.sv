@@ -17,10 +17,6 @@ interface encryption_block_if;
   logic                                     read_hash_state_at_address_pulse;
   logic                                     reset_hash_pulse_in;
 
-  // Block Counter Signals (Sent from Encryption Block)
-  logic                                     increment_block_counter_pulse;
-  logic                                     reset_block_counter_pulse;
-
   // Outputs from Encryption Block
   logic                                     encrypted_byte_pulse_out;
   logic                               [7:0] encrypted_byte_out;
@@ -65,9 +61,7 @@ interface encryption_block_if;
       output iv_standard_out,
       output hash_iterations_out,
       output hash_state_address_out,
-      output hash_state_at_address_out,
-      output increment_block_counter_pulse,
-      output reset_block_counter_pulse
+      output hash_state_at_address_out
   );
 
   // Output Holder
@@ -83,6 +77,4 @@ interface encryption_block_if;
       input read_hash_state_address_pulse,
       input read_hash_state_at_address_pulse
   );
-
-  modport block_counter_port(input increment_block_counter_pulse, input reset_block_counter_pulse);
 endinterface

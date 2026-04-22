@@ -54,7 +54,7 @@ interface block_counter_if #(
   );
 
   modport memory_out_port(input memory_out);
-  modport increment_counter_port(input increment_block_counter_pulse_in);
+  modport increment_counter_port(output increment_block_counter_pulse_in);
 
   modport output_holder_store_byte_port(input received_byte_pulse_out, input address_out);
   modport output_holder_set_address_port(input received_address_pulse_out, input address_out);

@@ -35,6 +35,7 @@ module memory_block #(
   logic [AddressWidth - 1:0] set_address_in;
   logic set_address_pulse_in;
   logic reset_memory_pulse_in;
+
   logic [MEMORY_WIDTH_BYTES * 8 - 1:0] memory_out;
   logic [7:0] memory_at_address_out;
   logic received_byte_pulse_out;
