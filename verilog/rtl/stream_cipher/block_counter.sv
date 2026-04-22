@@ -33,6 +33,21 @@ module block_counter #(
     output logic [AddressWidth - 1:0] address_out
     */
 );
+  logic [7:0] store_byte_in;
+  logic store_byte_pulse_in;
+  logic [AddressWidth - 1:0] set_address_in;
+  logic set_address_pulse_in;
+  logic reset_memory_pulse_in;
+  logic increment_block_counter_pulse_in;
+
+  logic [MEMORY_WIDTH_BYTES * 8 - 1:0] memory_out;
+  logic [7:0] memory_at_address_out;
+
+  logic received_byte_pulse_out;
+  logic received_address_pulse_out;
+
+  logic [AddressWidth - 1:0] address_out;
+
   assign store_byte_in = block_counter_port.store_byte_in;
   assign store_byte_pulse_in = block_counter_port.store_byte_pulse_in;
   assign set_address_in = block_counter_port.set_address_in;
