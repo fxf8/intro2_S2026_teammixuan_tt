@@ -23,11 +23,11 @@ interface memory_block_if #(
   logic read_address_pulse;
   logic read_byte_at_address_pulse;
 
-  modport command_center_store_byte_port(output store_byte_in, output store_byte_pulse_in);
-  modport command_center_set_address_port(output set_address_in, output set_address_pulse_in);
+  modport command_center_write_byte_port(output store_byte_in, output store_byte_pulse_in);
+  modport command_center_write_address_port(output set_address_in, output set_address_pulse_in);
   modport command_center_reset_memory_port(output reset_memory_pulse_in);
 
-  modport command_center_read_address(output read_address_pulse);
+  modport command_center_read_address_port(output read_address_pulse);
   modport command_center_read_byte_at_address_port(output read_byte_at_address_pulse);
 
   modport memory_block_port(

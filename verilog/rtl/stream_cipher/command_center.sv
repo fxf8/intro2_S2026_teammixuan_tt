@@ -73,30 +73,36 @@ module command_center (
     output logic write_hash_iterations_pulse_out,
     output types_pkg::chacha_iterations_t write_hash_iterations_out,
 
-    // Sent to Nonce Storage
-    output logic read_nonce_bytes_pulse_out,
+    // output logic read_nonce_bytes_pulse_out,
+    memory_block_if.command_center_read_byte_at_address_port read_nonce_byte_at_address_port,
 
-    // Sent to Nonce Storage (condition: non-command during MODE_NONCE_BYTES_INPUT)
-    output logic write_nonce_byte_pulse_out,
-    output types_pkg::chacha_byte_t write_nonce_byte_out,
+    // output logic write_nonce_byte_pulse_out,
+    // output types_pkg::chacha_byte_t write_nonce_byte_out,
+    memory_block_if.command_center_wrte_byte_port write_nonce_byte_port,
 
     // Sent to Nonce Storage (condition: command CMD_NONCE_ADDR_READ)
-    output logic read_nonce_address_pulse_out,
+    // output logic read_nonce_address_pulse_out,
+    memory_block_if.command_center_read_address_port  read_nonce_address_port,
     // Sent to Nonce Storage (condition: non-command during MODE_NONCE_BYTES_ADDR_SETUP)
-    output logic write_nonce_address_pulse_out,
-    output types_pkg::chacha_nonce_addr_t write_nonce_address_out,
+    // output logic write_nonce_address_pulse_out,
+    // output types_pkg::chacha_nonce_addr_t write_nonce_address_out,
+    memory_block_if.command_center_write_address_port write_nonce_address_port,
 
     // Sent to Key Storage (condition: command CMD_KEY_READ)
-    output logic read_key_byte_pulse_out,
+    // output logic read_key_byte_pulse_out,
+    memory_block_if.command_center_read_byte_at_address_port read_key_byte_at_address_port,
     // Sent to Key Storage (condition: non-command during MODE_KEY_BYTES_INPUT)
-    output logic write_key_byte_pulse_out,
-    output types_pkg::chacha_byte_t write_key_byte_out,
+    // output logic write_key_byte_pulse_out,
+    // output types_pkg::chacha_byte_t write_key_byte_out,
+    memory_block_if.command_center_write_byte_port write_key_byte_port,
 
     // Sent to Key Storage (condition: command CMD_KEY_ADDR_READ)
-    output logic read_key_address_pulse_out,
+    // output logic read_key_address_pulse_out,
+    memory_block_if.command_center_read_address_port  read_key_address_port,
     // Sent to Key Storage (condition: non-command during MODE_KEY_BYTES_ADDR_SETUP)
-    output logic write_key_address_pulse_out,
-    output types_pkg::chacha_key_addr_t write_key_address_out,
+    // output logic write_key_address_pulse_out,
+    // output types_pkg::chacha_key_addr_t write_key_address_out,
+    memory_block_if.command_center_write_address_port write_key_address_port,
 
     // Sent to Hash Generator (condition: command CMD_BLOCK_CNT_READ)
     output logic read_block_counter_pulse_out,
