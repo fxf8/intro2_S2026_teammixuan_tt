@@ -12,26 +12,6 @@ module block_counter #(
     nrst,  //clock and negative-edge reset
 
     block_counter_if.block_counter_port block_counter_port
-
-    /*
-    input logic [7:0] store_byte_in,
-    input logic store_byte_pulse_in,
-
-    input logic [AddressWidth - 1:0] set_address_in,
-    input logic set_address_pulse_in,
-
-    input logic reset_memory_pulse_in,
-
-    input logic increment_block_counter_pulse_in,
-
-    output logic [MEMORY_WIDTH_BYTES * 8 - 1:0] memory_out,
-    output logic [7:0] memory_at_address_out,
-
-    output logic received_byte_pulse_out,
-    output logic received_address_pulse_out,
-
-    output logic [AddressWidth - 1:0] address_out
-    */
 );
   logic [7:0] store_byte_in;
   logic store_byte_pulse_in;

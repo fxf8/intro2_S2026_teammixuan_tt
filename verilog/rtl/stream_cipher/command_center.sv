@@ -55,81 +55,43 @@ module command_center (
     input logic command_in,
     input logic [7:0] input_byte_in,
 
-    // Sent to Hash Generator (condition: non-command during MODE_ENCRYPT)
-    output logic message_byte_pulse_out,
-    output logic [7:0] message_byte_out,
 
-    // Sent to Hash Generator (condition: command CMD_IV_STD_READ) (Note: This
-    // might be sent to output holder under the same condition)
-    output logic read_iv_standard_pulse_out,
-
-    // Sent to Hash Generator (condition: non-command during MODE_IV_STANDARD_SETUP)
-    output logic write_iv_standard_pulse_out,
-    output types_pkg::chacha_setup_standard_t write_iv_standard_out,
-
-    // Sent to Hash Generator (condition: command CMD_N_ITER_READ)
-    output logic read_hash_iterations_pulse_out,
-    // Sent to Hash Generator (condition: non-command during MODE_HASH_ITERATIONS_SETUP)
-    output logic write_hash_iterations_pulse_out,
-    output types_pkg::chacha_iterations_t write_hash_iterations_out,
-
-    // output logic read_nonce_bytes_pulse_out,
+    // condition: command CMD_NONCE_READ
     memory_block_if.command_center_read_byte_at_address_port read_nonce_byte_at_address_port,
-
-    // output logic write_nonce_byte_pulse_out,
-    // output types_pkg::chacha_byte_t write_nonce_byte_out,
-    memory_block_if.command_center_wrte_byte_port write_nonce_byte_port,
-
-    // Sent to Nonce Storage (condition: command CMD_NONCE_ADDR_READ)
-    // output logic read_nonce_address_pulse_out,
-    memory_block_if.command_center_read_address_port  read_nonce_address_port,
-    // Sent to Nonce Storage (condition: non-command during MODE_NONCE_BYTES_ADDR_SETUP)
-    // output logic write_nonce_address_pulse_out,
-    // output types_pkg::chacha_nonce_addr_t write_nonce_address_out,
+    // condition: non-command during mode MODE_NONCE_BYTES_INPUT
+    memory_block_if.command_center_write_byte_port write_nonce_byte_port,
+    // condition: command CMD_NONCE_ADDR_READ
+    memory_block_if.command_center_read_address_port read_nonce_address_port,
+    // condition: non-command during MODE_NONCE_BYTES_ADDR_SETUP
     memory_block_if.command_center_write_address_port write_nonce_address_port,
+    // condition: command CMD_NONCE_RESET
+    memory_block_if.command_center_reset_memory_port reset_nonce_memory_port,
 
-    // Sent to Key Storage (condition: command CMD_KEY_READ)
-    // output logic read_key_byte_pulse_out,
+    // condition: command CMD_KEY_READ
     memory_block_if.command_center_read_byte_at_address_port read_key_byte_at_address_port,
-    // Sent to Key Storage (condition: non-command during MODE_KEY_BYTES_INPUT)
-    // output logic write_key_byte_pulse_out,
-    // output types_pkg::chacha_byte_t write_key_byte_out,
+    // condition: non-command during mode = MODE_KEY_BYTES_INPUT
     memory_block_if.command_center_write_byte_port write_key_byte_port,
-
-    // Sent to Key Storage (condition: command CMD_KEY_ADDR_READ)
-    // output logic read_key_address_pulse_out,
-    memory_block_if.command_center_read_address_port  read_key_address_port,
-    // Sent to Key Storage (condition: non-command during MODE_KEY_BYTES_ADDR_SETUP)
-    // output logic write_key_address_pulse_out,
-    // output types_pkg::chacha_key_addr_t write_key_address_out,
+    // condition: command CMD_KEY_ADDR_READ
+    memory_block_if.command_center_read_address_port read_key_address_port,
+    // condition: non-command during MODE_KEY_BYTES_ADDR_SETUP
     memory_block_if.command_center_write_address_port write_key_address_port,
+    // condition: command CMD_KEY_RESET
+    memory_block_if.command_center_reset_memory_port reset_key_memory_port,
 
-    // Sent to Hash Generator (condition: command CMD_BLOCK_CNT_READ)
-    output logic read_block_counter_pulse_out,
-    // Sent to Hash Generator (condition: non-command during MODE_BLOCK_COUNTER_INPUT)
-    output logic write_block_counter_pulse_out,
-    output types_pkg::chacha_byte_t write_block_counter_out,
 
-    // Sent to Block Counter (condition: command CMD_BLOCK_CNT_ADDR_READ)
-    output logic read_block_counter_address_pulse_out,
-    // Sent to Block Counter (condition: non-command during MODE_BLOCK_COUNTER_ADDR_SETUP)
-    output logic write_block_counter_address_pulse_out,
-    output types_pkg::chacha_block_counter_addr_t write_block_counter_address_out,
+    // condition: command CMD_BLOCK_CNT_READ
+    block_counter_if.command_center_read_byte_at_address_port
+        read_block_counter_byte_at_address_port,
+    // condition: non-command during mode = MODE_BLOCK_COUNTER_INPUT
+    block_counter_if.command_center_write_byte_port write_block_counter_port,
+    // condition: command CMD_BLOCK_CNT_ADDR_READ
+    block_counter_if.command_center_read_address_port read_block_counter_address_port,
+    // conditoin: non-command during mode = MODE_BLOCK_COUNTER_ADDR_SETUP
+    block_counter_if.command_center_write_address_port write_block_counter_address_port,
+    // condition: command CMD_BLOCK_CNT_RESET
+    block_counter_if.command_center_reset_memory_port reset_block_counter_port,
 
-    // Sent to Hash Generator (condition: command CMD_HASH_STATE_ADDR_READ)
-    output logic read_hash_state_address_pulse_out,
-
-    // Sent to Hash Generator (condition: non-command during MODE_HASH_STATE_ADDR_SETUP)
-    output logic write_hash_state_address_pulse_out,
-    output types_pkg::chacha_hash_state_addr_t write_hash_state_address_out,
-
-    // Sent to Hash Generator
-    output logic read_hash_state_at_address_pulse_out,
-
-    // Sent to Hash Generator (condition: command CMD_RESET_HASH)
-    output logic reset_hash_pulse_out,
-    // Sent to Hash Generator (condition: command CMD_HASH_STATUS)
-    output logic read_hash_status_pulse_out,
+    encryption_block_if.command_center_port command_center_port,
 
     // Sent to Output Mux (condition: command CMD_STATUS_READ)
     output logic read_mode_pulse_out,
@@ -142,74 +104,6 @@ module command_center (
 
   cmd_t command_code;
   assign command_code = cmd_t'(input_byte_in[4:0]);
-
-  // Assign statements for new outputs
-  assign message_byte_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_ENCRYPT);
-  assign message_byte_out = input_byte_in;
-
-  assign read_iv_standard_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_IV_STD_READ);
-  assign write_iv_standard_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_IV_STANDARD_SETUP);
-  assign write_iv_standard_out = types_pkg::chacha_setup_standard_t'(input_byte_in[0]);
-
-  assign read_hash_iterations_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_N_ITER_READ);
-  assign write_hash_iterations_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_HASH_ITERATIONS_SETUP);
-  assign write_hash_iterations_out = types_pkg::chacha_iterations_t'(input_byte_in);
-
-  assign read_nonce_bytes_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_NONCE_READ);
-  assign write_nonce_byte_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_NONCE_BYTES_INPUT);
-  assign write_nonce_byte_out = input_byte_in;
-
-  assign read_nonce_address_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_NONCE_ADDR_READ);
-  assign write_nonce_address_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_NONCE_BYTES_ADDR_SETUP);
-  assign write_nonce_address_out = types_pkg::chacha_nonce_addr_t'(input_byte_in[3:0]);
-
-  assign read_key_byte_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_KEY_READ);
-  assign write_key_byte_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_KEY_BYTES_INPUT);
-  assign write_key_byte_out = input_byte_in;
-
-  assign read_key_address_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_KEY_ADDR_READ);
-  assign write_key_address_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_KEY_BYTES_ADDR_SETUP);
-  assign write_key_address_out = types_pkg::chacha_key_addr_t'(input_byte_in[4:0]);
-
-  assign read_block_counter_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_BLOCK_CNT_READ);
-  assign write_block_counter_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_BLOCK_COUNTER_INPUT);
-  assign write_block_counter_out = input_byte_in;
-
-  assign read_block_counter_address_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_BLOCK_CNT_ADDR_READ);
-  assign write_block_counter_address_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_BLOCK_COUNTER_ADDR_SETUP);
-  assign write_block_counter_address_out =
-      types_pkg::chacha_block_counter_addr_t'(input_byte_in[2:0]);
-
-  assign read_hash_state_address_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATE_ADDR_READ);
-
-  assign write_hash_state_address_pulse_out =
-      (!command_in && pulse_in && command_mode == types_pkg::MODE_HASH_STATE_ADDR_SETUP);
-  assign write_hash_state_address_out = types_pkg::chacha_hash_state_addr_t'(input_byte_in[5:0]);
-  assign read_hash_state_at_address_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATE_AT_ADDR_READ);
-
-  assign reset_hash_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_RESET_HASH);
-  assign read_hash_status_pulse_out =
-      (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATUS);
 
   assign read_mode_pulse_out = (command_in && pulse_in && command_code == types_pkg::CMD_MODE_READ);
   assign current_mode_out = command_mode;
