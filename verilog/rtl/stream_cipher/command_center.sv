@@ -1,3 +1,6 @@
+// Import the package for types and enums
+import encryption_block_pkg::*;
+
 module command_center (
     input logic clk,
     nrst,  //clock and negative-edge reset
@@ -43,7 +46,7 @@ module command_center (
     // condition: command CMD_BLOCK_CNT_RESET
     block_counter_if.command_center_reset_memory_port reset_block_counter_port,
 
-    encryption_block_if.command_center_port command_center_port,
+    // encryption_block_if.command_center_port command_center_port, // Removed interface connection
 
     // Sent to Output Mux (condition: command CMD_STATUS_READ)
     output logic read_mode_pulse_out,
@@ -177,26 +180,26 @@ module command_center (
       (command_in && pulse_in && command_code == types_pkg::CMD_BLOCK_CNT_RESET);
 
   // Encryption Block Connections
-  assign command_center_port.message_byte_pulse_in =
+  assign message_byte_pulse_in =
       (!command_in && pulse_in && command_mode == types_pkg::MODE_ENCRYPT);
-  assign command_center_port.message_byte_in = input_byte_in;
-  assign command_center_port.write_iv_standard_pulse_in =
+  assign message_byte_in = input_byte_in;
+  assign write_iv_standard_pulse_in =
       (!command_in && pulse_in && command_mode == types_pkg::MODE_IV_STANDARD_SETUP);
-  assign command_center_port.write_iv_standard_in = chacha_setup_standard_t'(input_byte_in[0]);
-  assign command_center_port.write_hash_iterations_pulse_in =
+  assign write_iv_standard_in = chacha_setup_standard_t'(input_byte_in[0]);
+  assign write_hash_iterations_pulse_in =
       (!command_in && pulse_in && command_mode == types_pkg::MODE_HASH_ITERATIONS_SETUP);
-  assign command_center_port.write_hash_iterations_in = chacha_iterations_t'(input_byte_in);
-  assign command_center_port.write_hash_state_address_pulse_in =
+  assign write_hash_iterations_in = chacha_iterations_t'(input_byte_in);
+  assign write_hash_state_address_pulse_in =
       (!command_in && pulse_in && command_mode == types_pkg::MODE_HASH_STATE_ADDR_SETUP);
-  assign command_center_port.write_hash_state_address_in = chacha_hash_state_addr_t'(input_byte_in);
-  assign command_center_port.read_iv_standard_pulse =
+  assign write_hash_state_address_in = chacha_hash_state_addr_t'(input_byte_in);
+  assign read_iv_standard_pulse =
       (command_in && pulse_in && command_code == types_pkg::CMD_IV_STD_READ);
-  assign command_center_port.read_hash_iterations_pulse =
+  assign read_hash_iterations_pulse =
       (command_in && pulse_in && command_code == types_pkg::CMD_N_ITER_READ);
-  assign command_center_port.read_hash_state_address_pulse =
+  assign read_hash_state_address_pulse =
       (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATE_ADDR_READ);
-  assign command_center_port.read_hash_state_at_address_pulse =
+  assign read_hash_state_at_address_pulse =
       (command_in && pulse_in && command_code == types_pkg::CMD_HASH_STATE_AT_ADDR_READ);
-  assign command_center_port.reset_hash_pulse_in =
+  assign reset_hash_pulse_in =
       (command_in && pulse_in && command_code == types_pkg::CMD_RESET_HASH);
 endmodule

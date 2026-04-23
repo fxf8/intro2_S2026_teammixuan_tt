@@ -1,4 +1,5 @@
 // Import the package for types and enums
+import encryption_block_pkg::*;
 
 module top (
     input logic clk,
@@ -18,6 +19,7 @@ module top (
     // Output Byte
     output logic [7:0] output_byte
 );
+
   typedef types_pkg::interface_state_t interface_state_t;
   typedef types_pkg::output_holder_state_t output_holder_state_t;
 
@@ -43,8 +45,6 @@ module top (
   block_counter_if #(
       .MEMORY_WIDTH_BYTES(8)  // Block counter is 8 bytes (chacha_block_counter_t [63:0])
   ) block_counter_if_inst ();
-
-  encryption_block_if encryption_block_if_inst ();
 
   // Module Instantiations
 
@@ -131,7 +131,20 @@ module top (
       .write_block_counter_address_port(block_counter_if_inst),
       .reset_block_counter_port(block_counter_if_inst),
 
-      .command_center_port(encryption_block_if_inst),
+      // .command_center_port(encryption_block_if_inst), // Removed interface connection
+      .message_byte_pulse_in(encryption_block_pkg::message_byte_pulse_in),
+      .message_byte_in(encryption_block_pkg::message_byte_in),
+      .write_iv_standard_pulse_in(encryption_block_pkg::write_iv_standard_pulse_in),
+      .write_iv_standard_in(encryption_block_pkg::write_iv_standard_in),
+      .write_hash_iterations_pulse_in(encryption_block_pkg::write_hash_iterations_pulse_in),
+      .write_hash_iterations_in(encryption_block_pkg::write_hash_iterations_in),
+      .write_hash_state_address_pulse_in(encryption_block_pkg::write_hash_state_address_pulse_in),
+      .write_hash_state_address_in(encryption_block_pkg::write_hash_state_address_in),
+      .read_iv_standard_pulse(encryption_block_pkg::read_iv_standard_pulse),
+      .read_hash_iterations_pulse(encryption_block_pkg::read_hash_iterations_pulse),
+      .read_hash_state_address_pulse(encryption_block_pkg::read_hash_state_address_pulse),
+      .read_hash_state_at_address_pulse(encryption_block_pkg::read_hash_state_at_address_pulse),
+      .reset_hash_pulse_in(encryption_block_pkg::reset_hash_pulse_in),
 
       .read_mode_pulse_out(command_center_read_mode_pulse),
       .current_mode_out(command_center_current_mode)
@@ -145,7 +158,21 @@ module top (
       .nonce_memory_port(nonce_memory_if),
       .block_counter_memory_port(block_counter_if_inst),
       .increment_block_counter_port(block_counter_if_inst),
-      .encryption_block_port(encryption_block_if_inst)
+      .message_byte_pulse_in(encryption_block_pkg::message_byte_pulse_in),
+      .message_byte_in(encryption_block_pkg::message_byte_in),
+      .write_iv_standard_pulse_in(encryption_block_pkg::write_iv_standard_pulse_in),
+      .write_iv_standard_in(encryption_block_pkg::write_iv_standard_in),
+      .write_hash_iterations_pulse_in(encryption_block_pkg::write_hash_iterations_pulse_in),
+      .write_hash_iterations_in(encryption_block_pkg::write_hash_iterations_in),
+      .write_hash_state_address_pulse_in(encryption_block_pkg::write_hash_state_address_pulse_in),
+      .write_hash_state_address_in(encryption_block_pkg::write_hash_state_address_in),
+      .reset_hash_pulse_in(encryption_block_pkg::reset_hash_pulse_in),
+      .encrypted_byte_pulse_out(encryption_block_pkg::encrypted_byte_pulse_out),
+      .encrypted_byte_out(encryption_block_pkg::encrypted_byte_out),
+      .iv_standard_out(encryption_block_pkg::iv_standard_out),
+      .hash_iterations_out(encryption_block_pkg::hash_iterations_out),
+      .hash_state_address_out(encryption_block_pkg::hash_state_address_out),
+      .hash_state_at_address_out(encryption_block_pkg::hash_state_at_address_out)
   );
 
   // Output Holder
@@ -155,7 +182,18 @@ module top (
       .interface_state(interface_state),
 
       // Interfaces
-      .encryption_block_port(encryption_block_if_inst),
+      // .encryption_block_port(encryption_block_if_inst), // Removed interface connection
+      .encrypted_byte_pulse_in(encryption_block_pkg::encrypted_byte_pulse_out),
+      .encrypted_byte_in(encryption_block_pkg::encrypted_byte_out),
+      .read_iv_standard_pulse_in(encryption_block_pkg::read_iv_standard_pulse),
+      .iv_standard_in(encryption_block_pkg::iv_standard_out),
+      .read_hash_iterations_pulse_in(encryption_block_pkg::read_hash_iterations_pulse),
+      .hash_iterations_in(encryption_block_pkg::hash_iterations_out),
+      .read_hash_state_address_pulse_in(encryption_block_pkg::read_hash_state_address_pulse),
+      .hash_state_address_in(encryption_block_pkg::hash_state_address_out),
+      .read_hash_state_at_address_pulse_in(encryption_block_pkg::read_hash_state_at_address_pulse),
+      .hash_state_at_address_in(encryption_block_pkg::hash_state_at_address_out),
+
       .key_memory_read_byte_port(key_memory_if),
       .key_memory_read_address_port(key_memory_if),
       .nonce_memory_read_byte_port(nonce_memory_if),
