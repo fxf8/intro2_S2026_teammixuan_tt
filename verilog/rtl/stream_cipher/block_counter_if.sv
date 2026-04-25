@@ -66,3 +66,11 @@ interface block_counter_if #(
       input memory_at_address_out
   );
 endinterface
+
+`ifndef BLOCK_COUNTER_IF_TYPES_PKG
+`define BLOCK_COUNTER_IF_TYPES_PKG
+
+package block_counter_if_types_pkg;
+endpackage
+
+`endif
